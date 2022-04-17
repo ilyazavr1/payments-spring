@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+
+<header th:fragment="header">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <div sec:authorize="hasAuthority('CLIENT')">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+            <a class="navbar-brand" href="#">Payments</a>
+
+
+            <ul class="navbar-nav">
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/cards}">
+                        My cards
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Make payment
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/card/create}">
+                        Make card
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        My payments
+                    </a>
+                </li>
+            </ul>
+            -->
+            <div style="margin-left: 15px">
+
+                <span class="badge badge-warning"> <a class="nav-link" href="#">Logout</a></span>
+            </div>
+        </nav>
+        <br>
+        </nav>
+    </div>
+
+
+    <div sec:authorize="hasAuthority('ADMINISTRATOR')">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+            <a class="navbar-brand" href="#">Payments</a>
+
+
+            <ul class="navbar-nav">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> All users</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Requests</a>
+                </li>
+
+            </ul>
+            <!--      <div style="margin-left: auto; margin-right: 0;">
+                      <c:if test="${sessionScope.lang != null}">
+                          <c:choose>
+                              <c:when test="${sessionScope.lang == 'uk'}">
+                                  <a href="?sessionLocale=en"> <fmt:message key="changeLanguageTo"/></a>
+                              </c:when>
+                              <c:when test="${sessionScope.lang == 'en'}">
+                                  <a href="?sessionLocale=uk"> <fmt:message key="changeLanguageTo"/></a>
+                              </c:when>
+                          </c:choose>
+                      </c:if>
+                      <c:if test="${sessionScope.lang == null}">
+                          <a href="?sessionLocale=en"> <fmt:message key="changeLanguageTo"/></a>
+                      </c:if>
+                  </div>-->
+            <div style="margin-left: 15px">
+
+                <span class="badge badge-warning">Logout </span>
+            </div>
+
+        </nav>
+        <br>
+    </div>
+    <div sec:authorize="hasAuthority('ROLE_ANONYMOUS')">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+        <a class="navbar-brand" href="#">Payments</a>
+
+
+    </nav>
+    <br>
+    </div>
+</header>
+
+
+</body>
+</html>

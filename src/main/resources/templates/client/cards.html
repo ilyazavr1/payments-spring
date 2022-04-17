@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta charset="UTF-8">
+    <title>Cards</title>
+
+
+</head>
+<body>
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+
+<div class="container">
+
+    <div class="row">
+
+
+                    <div th:each="card : ${cardList}" class="col-sm-4 py-2">
+
+
+                        <div th:if="${card.blocked == false}" class="card h-100 border-primary">
+
+                            <div  class="card-body">
+                                <h3 class="card-title" th:text="${card.number}"></h3>
+                                <h3 class="card-title"th:text="${card.name}"> ></h3>
+                                <p class="card-text"th:text="${card.money}">></p>
+                                <p class="card-text"th:text="${card.blocked}">></p>
+                                <div>
+                                    <form style="float: left; width: 40%" action="#" method="post">
+
+                                        <input style="background-color: lightgreen" type="submit"
+                                               class="btn btn-outline-secondary" value="top up">
+                                    </form>
+
+                                    <form style="float: right; width: 60%" action="#" method="post">
+
+                                        <input style="margin-left: 70px; background-color: lightcoral" type="submit" class="btn btn-outline-secondary" value="block">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${card.blocked == true}" style="background-color: lightcoral" class="card h-100 border-primary">
+
+                            <div  class="card-body">
+                                <h3 class="card-title" th:text="${card.number}"></h3>
+                                <h3 class="card-title"th:text="${card.name}"> ></h3>
+                                <p class="card-text"th:text="${card.money}">></p>
+                                <p class="card-text"th:text="${card.blocked}">></p>
+                                <div>
+                                    <form style="float: left; width: 40%" action="#" method="post">
+
+                                        <input style="background-color: lightgreen" type="submit"
+                                               class="btn btn-outline-secondary" value="top up">
+                                    </form>
+
+                                    <form style="float: right; width: 60%" action="#" method="post">
+
+                                        <input style="margin-left: 70px; background-color: lightcoral" type="submit" class="btn btn-outline-secondary" value="block">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+              <!--  <c:if test="${card.blocked == true && card.underConsideration == false}">
+                    <c:url var="cardUnblockId" value="${Path.CARD_UNBLOCK_REQUEST_PATH}">
+                        <c:param name="id" value="${card.id}"/>
+                    </c:url>
+                    <div class="col-sm-4 py-2">
+                        <div style="background-color: lightcoral" class="card h-100 border-primary">
+                            <div class="card-body">
+                                <h3 class="card-title"><cardFormat:formatCardNumber number="${card.number}"/></h3>
+                                <h3 class="card-title">${card.name}</h3>
+                                <p class="card-text"><c:out value="${card.money}"> </c:out></p>
+                                <p class="card-text"><cardFormat:formatActiveBlockedBoolean
+                                        status="${card.blocked}"> </cardFormat:formatActiveBlockedBoolean></p>
+                                <a style="background-color: lightgreen" href="${cardUnblockId}"
+                                   class="btn btn-outline-secondary">UNBLOCK</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+                <c:if test="${card.underConsideration == true}">
+                    <div class="col-sm-4 py-2">
+                        <div style="background-color: darkgrey" class="card h-100 border-primary">
+                            <div class="card-body">
+                                <h3 class="card-title"><cardFormat:formatCardNumber number="${card.number}"/></h3>
+                                <h3 class="card-title">${card.name}</h3>
+                                <p class="card-text"><c:out value="${card.money}"> </c:out></p>
+                                <p class="card-text"><cardFormat:formatActiveBlockedBoolean
+                                        status="${card.blocked}"> </cardFormat:formatActiveBlockedBoolean></p>
+                                <p>Under consideration</p>
+
+                            </div>
+                        </div>
+                    </div>
+                </c:if>-->
+
+    </div>
+
+</div>
+
+
+</body>
+</html>,
