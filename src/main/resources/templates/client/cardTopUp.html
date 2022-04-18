@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <title>Card top up</title>
+</head>
+<body>
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+
+
+<div class="container">
+
+
+    <div class="row">
+
+        <div style="width:450px; margin-top:30%; margin-left: 30%" class="card">
+            <article class="card-body">
+                <form th:action="@{/client/card/{number}/top-up(number=${card.number})}" method="post" >
+                <h4 class="card-title mb-4 mt-1">Top up</h4>
+                <h4 class="card-title mb-4 mt-1">Number</h4>
+
+                <p th:text="${card.number}"></p>
+                    <div class="form-group">
+                        <label>Input money amount</label>
+                        <input name="money" class="form-control" type="number">
+                        <!--<input name="cardNumber" th:value="${card.number}" class="form-control" type="hidden">-->
+
+                        <div style="color: red" th:if="${param.error}">exception.</div>
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <a th:href="@{/client/cards}"
+                           class="btn btn-danger">Cancel</a>
+
+                        <button style="margin-left: 150px" type="submit" class="btn btn-primary">Confirm</button>
+                    </div>
+
+                </form>
+            </article>
+        </div>
+    </div>
+
+</div>
+
+
+
+</body>
+</html>

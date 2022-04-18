@@ -23,7 +23,8 @@ public class CardDto {
     @Pattern(regexp = "^[0-9]{16}$")
     private String number;
 
-
+    @NotEmpty
+    @Size(min = 1, max = 10000)
     private int money;
 
 

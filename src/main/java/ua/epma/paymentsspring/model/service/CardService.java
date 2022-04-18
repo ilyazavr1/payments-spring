@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ua.epma.paymentsspring.model.entity.Card;
+import ua.epma.paymentsspring.model.excwption.BlockedCardException;
 import ua.epma.paymentsspring.model.excwption.InvalidCardName;
+import ua.epma.paymentsspring.model.excwption.InvalidCardNumberException;
+import ua.epma.paymentsspring.model.excwption.InvalidMoneyAmountException;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
@@ -20,15 +23,36 @@ public class CardService {
     private UserRepository userRepository;
 
 
-
-    public List<Card> getCardListByUser(){
+    public List<Card> getCardListByUser() {
         return cardRepository.findByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
-    public void createCard(String name) throws InvalidCardName {
-        if (name.length() > 30 || name.length() < 1) throw new InvalidCardName();
-        String number = generateCardNumber();
 
+    public Card getCardOfCurrentUserByNumber(String number) throws InvalidCardNumberException {
+        Card card = cardRepository.findByNumberAndUserId(number, userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+        if (card == null) throw new InvalidCardNumberException();
+        return card;
+    }
+
+    public void updateCardWithMoney(String number, String money) throws BlockedCardException, InvalidMoneyAmountException {
+        Card card;
+        try {
+            card = getCardOfCurrentUserByNumber(number);
+        } catch (InvalidCardNumberException e) {
+            throw new RuntimeException();
+        }
+        if (card.isBlocked()) throw new BlockedCardException();
+
+        card.setMoney(card.getMoney() + validateMoney(money));
+
+        cardRepository.save(card);
+
+    }
+
+
+    public void createCard(String name) throws InvalidCardName {
+        if (name.length() > 30 || name.length() < 3 ) throw new InvalidCardName();
+        String number = generateCardNumber();
         if (cardRepository.findByNumber(number) != null) return;
 
         Card card = Card.builder()
@@ -40,7 +64,12 @@ public class CardService {
         cardRepository.save(card);
     }
 
-
+    public int validateMoney(String money) throws InvalidMoneyAmountException {
+        if (money.isEmpty() ||!money.replaceFirst("^0*", "").matches("^[0-9]{0,5}$")) throw new InvalidMoneyAmountException();
+        int moneyInt = Integer.parseInt(money);
+        if (moneyInt <= 0 || moneyInt > 10000) throw new InvalidMoneyAmountException();
+        return moneyInt;
+    }
     private static String generateCardNumber() {
         long randomNum = ThreadLocalRandom.current().nextLong(1, 1_0000_0000_0000L);
 

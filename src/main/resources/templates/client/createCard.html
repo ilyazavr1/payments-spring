@@ -20,7 +20,7 @@
                 <article class="card-body">
 
                     <h4 class="card-title mb-4 mt-1">Create card</h4>
-                    <div style="color: red" class="error-message" th:if="${param.error != null}"
+                    <div style="color: red" class="error-message" th:if="${param.error }"
                          th:text="exception">
                     </div>
                     <div class="form-group">
