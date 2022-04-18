@@ -3,12 +3,13 @@ package ua.epma.paymentsspring.model.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.epma.paymentsspring.model.entity.Card;
-import ua.epma.paymentsspring.model.excwption.BlockedCardException;
-import ua.epma.paymentsspring.model.excwption.InvalidCardName;
-import ua.epma.paymentsspring.model.excwption.InvalidCardNumberException;
-import ua.epma.paymentsspring.model.excwption.InvalidMoneyAmountException;
+import ua.epma.paymentsspring.model.entity.User;
+import ua.epma.paymentsspring.model.excwption.*;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
@@ -51,7 +52,7 @@ public class CardService {
 
 
     public void createCard(String name) throws InvalidCardName {
-        if (name.length() > 30 || name.length() < 3 ) throw new InvalidCardName();
+        if (name.length() > 30 || name.length() < 3) throw new InvalidCardName();
         String number = generateCardNumber();
         if (cardRepository.findByNumber(number) != null) return;
 
@@ -64,12 +65,35 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    public void blockCardByNumber(String number, String password) throws InvalidCardNumberException, AuthenticationFailedException {
+        Card card = getCardOfCurrentUserByNumber(number);
+        if (card == null || card.isBlocked()) return;
+
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (!encoder.matches(password, user.getPassword())) throw new AuthenticationFailedException();
+
+        card.setBlocked(true);
+
+        cardRepository.save(card);
+    }
+
+
+    public void test() {
+
+
+    }
+
     public int validateMoney(String money) throws InvalidMoneyAmountException {
-        if (money.isEmpty() ||!money.replaceFirst("^0*", "").matches("^[0-9]{0,5}$")) throw new InvalidMoneyAmountException();
+        if (money.isEmpty() || !money.replaceFirst("^0*", "").matches("^[0-9]{0,5}$"))
+            throw new InvalidMoneyAmountException();
         int moneyInt = Integer.parseInt(money);
         if (moneyInt <= 0 || moneyInt > 10000) throw new InvalidMoneyAmountException();
         return moneyInt;
     }
+
     private static String generateCardNumber() {
         long randomNum = ThreadLocalRandom.current().nextLong(1, 1_0000_0000_0000L);
 

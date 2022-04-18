@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ua.epma.paymentsspring.model.dto.UserDto;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.excwption.AuthorizationFailedException;
 import ua.epma.paymentsspring.model.excwption.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.repository.RoleRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;

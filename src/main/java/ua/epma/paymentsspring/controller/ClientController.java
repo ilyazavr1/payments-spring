@@ -2,18 +2,18 @@ package ua.epma.paymentsspring.controller;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import ua.epma.paymentsspring.model.entity.Card;
-import ua.epma.paymentsspring.model.excwption.BlockedCardException;
-import ua.epma.paymentsspring.model.excwption.InvalidCardName;
-import ua.epma.paymentsspring.model.excwption.InvalidCardNumberException;
-import ua.epma.paymentsspring.model.excwption.InvalidMoneyAmountException;
+import ua.epma.paymentsspring.model.excwption.*;
 import ua.epma.paymentsspring.model.service.CardService;
 import ua.epma.paymentsspring.model.service.UserService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Controller
@@ -66,15 +66,7 @@ public class ClientController {
     }*/
     @GetMapping("/card/{number}/top-up")
     public String getCardTopUp(@PathVariable String number, Model model) {
-        if (number == null || number.isEmpty()) return "redirect:/client/cards";
-        Card card;
-        try {
-            card = cardService.getCardOfCurrentUserByNumber(number);
-            if (card.isBlocked()) return "redirect:/client/cards";
-            model.addAttribute("card", card);
-        } catch (InvalidCardNumberException e) {
-            return "redirect:/client/cards";
-        }
+        if (getCard(number, model)) return "redirect:/client/cards";
 
         return "/client/cardTopUp";
     }
@@ -107,24 +99,49 @@ public class ClientController {
 
     @GetMapping("/card/{number}/block")
     public String getCardBlock(@PathVariable String number, Model model) {
-        if (number == null || number.isEmpty()) return "redirect:/client/cards";
-        Card card;
-        try {
-            card = cardService.getCardOfCurrentUserByNumber(number);
-            if (card.isBlocked()) return "redirect:/client/cards";
-            model.addAttribute("card", card);
-        } catch (InvalidCardNumberException e) {
-            return "redirect:/client/cards";
-        }
-
+        if (getCard(number, model)) return "redirect:/client/cards";
+        cardService.test();
         return "/client/blockCard";
     }
 
+    private boolean getCard(@PathVariable String number, Model model) {
+        if (number == null || number.isEmpty()) return true;
+        Card card;
+        try {
+            card = cardService.getCardOfCurrentUserByNumber(number);
+            if (card.isBlocked()) return true;
+            model.addAttribute("card", card);
+        } catch (InvalidCardNumberException e) {
+            return true;
+        }
+        return false;
+    }
+
     @PostMapping("/card/{number}/block")
-    public String postBlockCard(@PathVariable String number,@RequestParam("password") String password){
+    public String postBlockCard(@PathVariable String number, @RequestParam("password") String password) {
+
+        try {
+            cardService.blockCardByNumber(number, password);
+        } catch (InvalidCardNumberException e) {
+            return "redirect:/client/cards";
+        } catch (AuthenticationFailedException e) {
+            return "redirect:/client/card/" + number + "/block?error";
+        }
 
 
-        return "";
+        return "redirect:/client/cards";
+    }
+
+    @GetMapping("/card/payment")
+    private String getPayment(Model model) {
+
+        List<Card> cardList = cardService.getCardListByUser().stream().filter(card -> !card.isBlocked()).collect(Collectors.toList());
+
+        
+
+        model.addAttribute("cardList", cardList);
+
+        return "/client/payment";
     }
 
 }
