@@ -3,15 +3,22 @@ package ua.epma.paymentsspring.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
+import ua.epma.paymentsspring.model.entity.Payment;
 import ua.epma.paymentsspring.model.excwption.*;
 import ua.epma.paymentsspring.model.service.CardService;
+import ua.epma.paymentsspring.model.service.PaymentService;
 import ua.epma.paymentsspring.model.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +29,7 @@ public class ClientController {
 
     private final UserService userService;
     private final CardService cardService;
+    private final PaymentService paymentService;
 
 
     @GetMapping("/cards")
@@ -49,21 +57,7 @@ public class ClientController {
         return "redirect:/client/cards";
     }
 
-    /*@GetMapping("/card/{number}/top-up")
-    public String getCardTopUp(@RequestParam(name = "cardNumber", required = false) String cardNumber, Model model) {
-        if (cardNumber == null || cardNumber.isEmpty()) return "redirect:/client/cards";
-        Card card;
-        try {
-            card= cardService.getCardOfCurrentUserByNumber(cardNumber);
-            if (card.isBlocked())  return "redirect:/client/cards";
-            model.addAttribute("invalidMoney", model.getAttribute("invalidMoney"));
-            model.addAttribute("card", card);
-        } catch (InvalidCardNumberException e) {
-            return "redirect:/client/cards";
-        }
 
-        return "/client/cardTopUp";
-    }*/
     @GetMapping("/card/{number}/top-up")
     public String getCardTopUp(@PathVariable String number, Model model) {
         if (getCard(number, model)) return "redirect:/client/cards";
@@ -82,25 +76,12 @@ public class ClientController {
         }
         return "redirect:/client/cards";
     }
-  /*  @PostMapping("/card/top-up")
-    public ModelAndView postCardTopUp(@RequestParam("money") String money, @RequestParam("cardNumber") String cardNumber, ModelMap model) {
-        try {
-            cardService.updateCardWithMoney(cardNumber, money);
-        } catch (BlockedCardException e) {
-            return new ModelAndView("redirect:/client/cards", model);
-        } catch (InvalidMoneyAmountException e) {
-            model.addAttribute("invalidMoney", true);
-            model.addAttribute("cardNumber", cardNumber);
-            return new ModelAndView("redirect:/client/card/top-up", model);
-        }
-        return new ModelAndView("redirect:/client/cards", model);
-    }*/
 
 
     @GetMapping("/card/{number}/block")
     public String getCardBlock(@PathVariable String number, Model model) {
         if (getCard(number, model)) return "redirect:/client/cards";
-        cardService.test();
+
         return "/client/blockCard";
     }
 
@@ -133,15 +114,77 @@ public class ClientController {
     }
 
     @GetMapping("/card/payment")
-    private String getPayment(Model model) {
-
+    public String getPayment(Model model) {
         List<Card> cardList = cardService.getCardListByUser().stream().filter(card -> !card.isBlocked()).collect(Collectors.toList());
 
-        
-
+        model.addAttribute("paymentDto", new PaymentDto());
         model.addAttribute("cardList", cardList);
-
         return "/client/payment";
     }
+
+
+    @PostMapping(value = "/card/payment")
+    public String postPaymentSend(@RequestParam("action") String action, Model model, @ModelAttribute("paymentDto") @Valid PaymentDto paymentDto, BindingResult bindingResult) {
+        List<Card> cardList = cardService.getCardListByUser().stream().filter(card -> !card.isBlocked()).collect(Collectors.toList());
+        model.addAttribute("cardList", cardList);
+
+        if (bindingResult.hasErrors()) {
+            System.out.println("esty");
+            return "/client/payment";
+        }
+
+        try {
+            if (action.equals("send")) {
+                paymentService.makePayment(paymentDto);
+            } else paymentService.createPreparedPayment(paymentDto);
+
+        } catch (InvalidCardNumberException e) {
+            model.addAttribute("invalidCardNumber", true);
+            return "/client/payment";
+        } catch (InvalidBalanceOnCardException e) {
+            model.addAttribute("invalidBalance", true);
+            return "/client/payment";
+        } catch (BlockedCardException e) {
+            model.addAttribute("blockedCard", true);
+            return "/client/payment";
+        }
+
+        return "redirect:/client/cards";
+    }
+
+    @PostMapping(value = "/card/payment", params = "action=confirm")
+    public String postPaymentConfirm(@RequestParam("paymentId") String paymentId, RedirectAttributes redirectAttributes) {
+
+        System.out.println(paymentService.getPaymentById(Long.valueOf(paymentId)));
+
+
+        try {
+            paymentService.confirmPayment(Long.valueOf(paymentId));
+        } catch (InvalidBalanceOnCardException e) {
+            redirectAttributes.addAttribute("invalidBalance", paymentId);
+            return "redirect:/client/payments";
+        } catch (InvalidCardNumberException e) {
+           // redirectAttributes.addAttribute("inclid", paymentId);
+            return "redirect:/client/payments";
+        } catch (BlockedCardException e) {
+            redirectAttributes.addAttribute("blockedCard", paymentId);
+            return "redirect:/client/payments";
+        }
+
+        return "redirect:/client/payments";
+    }
+
+    @GetMapping("/payments")
+    public String getAllPayments(Model model) {
+        List<Payment> paymentList = paymentService.getPaymentsByCurrentUser();
+
+        model.addAttribute("paymentList", paymentList);
+
+        for (Payment p : paymentList) {
+            System.out.println(p);
+        }
+        return "/client/payments";
+    }
+
 
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My payments</title>
+</head>
+<body>
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+<div class="container">
+
+
+    <div class="row col-md-6 col-md-offset-2 custyle">
+        <table class="table table-striped custab">
+            <thead>
+
+
+            <tr>
+                <th>Number</th>
+                <th style="padding-right: 150px">Sender card</th>
+                <th>Balance before</th>
+                <th>Payment sum</th>
+                <th>Balance after</th>
+                <th style="padding-right: 150px">Recipient name</th>
+                <th style="padding-right: 150px">Recipient card</th>
+                <th style="padding-right: 150px">Data</th>
+                <th>Status</th>
+                <th class="text-center">Action</th>
+            </tr>
+            </thead>
+
+
+            <tr th:each="payment : ${paymentList}">
+                <td th:text="${payment.id}"></td>
+                <td th:text="${payment.cardSenderId.number}"></td>
+                <td>
+                   <span th:if="${payment.send == true}" th:text="${payment.balance}"></span>
+                   <span th:if="${payment.send == false}" th:text="${payment.cardSenderId.money}"></span>
+                </td>
+                <td th:text="${payment.money}"></td>
+                <td>
+                    <span th:if="${payment.send == true}" th:text="${payment.balance}"></span>
+                    <span th:if="${payment.send == false}" th:text="${payment.cardSenderId.money - payment.money}"></span>
+                </td>
+                <td th:text="${payment.cardDestinationId.userId.firstName}"></td>
+                <td style="width: 2000px" th:text="${payment.cardDestinationId.number}"></td>
+                <td th:text="${payment.creationTimestamp}"></td>
+                <td class="badge badge-primary" th:text="${payment.send} ?'Send' : 'Pepared'"></td>
+
+                <form th:if="${payment.send == false}" th:action="@{/client/card/payment}" method="post">
+                    <input type="hidden" name="paymentId" th:value="${payment.id}">
+
+                    <td>
+                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block">
+                            Confirm
+                        </button>
+                    </td>
+                   
+                </form>
+
+                <td th:if="${param.invalidBalance != null}" >
+                    <span style="color: red" th:if="${param.invalidBalance[0] == payment.id.toString()}" th:text="INVALID12213"></span>
+                </td>
+                <td th:if="${param.blockedCard != null}" >
+                    <span style="color: red" th:if="${param.blockedCard[0] == payment.id.toString()}" th:text="blockedCard"></span>
+                </td>
+
+
+            </tr>
+
+
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

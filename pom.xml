@@ -11,7 +11,7 @@
 	<groupId>ua.epma</groupId>
 	<artifactId>payments-spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+<!--	<packaging>war</packaging>-->
 	<name>payments-spring</name>
 	<description>Demo project for Spring Boot</description>
 

@@ -28,10 +28,14 @@ public class Payment {
     private int money;
 
     @Column(name = "is_send")
-    private int isSend;
+    private boolean isSend;
 
     @Column(name = "creation_timestamp")
     private LocalDateTime creationTimestamp;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User userId;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "card_sender_id", nullable = false)
