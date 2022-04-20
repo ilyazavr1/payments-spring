@@ -10,6 +10,9 @@ import ua.epma.paymentsspring.model.excwption.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.repository.RoleRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 
 @AllArgsConstructor
 @Service
@@ -31,6 +34,26 @@ public class UserService {
         return user;
     }
 
+
+    public List<User> getAllUsers(){
+        return userRepository.getUsers();
+    }
+
+    public void blockUserById(Long id){
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()){
+            user.get().setBlocked(true);
+            userRepository.save(user.get());
+        };
+    }
+
+    public void unblockUserById(Long id){
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()){
+            user.get().setBlocked(false);
+            userRepository.save(user.get());
+        };
+    }
 
     public User registerUser(UserDto userDto) throws UserAlreadyExistException {
         if (emailExists(userDto.getEmail())) throw new UserAlreadyExistException();

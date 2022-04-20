@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Block card</title>
+</head>
+<body>
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+<div class="container">
+    <div class="row">
+
+        <div style="width:450px; margin-top:30%; margin-left: 30%" class="card">
+            <article class="card-body">
+
+                <h4 class="card-title mb-4 mt-1">Confirm</h4>
+                <form th:action="@{/admin/user/card/block}" method="post">
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input name="password" class="form-control" placeholder="password" type="password">
+                        <input type="hidden" name="cardId" th:value="${card.id}">
+                        <input type="hidden" name="cardNumber" th:value="${card.number}">
+                        <input type="hidden" name="userId" th:value="${card.userId.id}">
+                        <div style="color: red" th:if="${param.wrongPassword}">Invalid password.</div>
+                    </div>
+
+
+
+                    <div class="form-group mx-sm-3 mb-2">
+                        <button style="margin-left: 150px" type="submit" class="btn btn-primary">Confirm</button>
+
+
+                        <a th:href="@{/admin/user/{id}/cards(id=${card.userId.id})}"
+                           class="btn btn-danger">Cancel</a>
+                    </div>
+
+                </form>
+            </article>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+</body>
+</html>

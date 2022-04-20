@@ -13,6 +13,6 @@ public class UriPath {
 
 
 
-    public final static String ADMIN_TEST = "/admin/test";
+    public final static String ADMIN_TEST = "/admin/users";
 
 }

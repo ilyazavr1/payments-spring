@@ -65,7 +65,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/registration").permitAll()
                 .antMatchers("/client/**").hasAnyAuthority(Role.RoleEnum.CLIENT.name())
-                .antMatchers("/admin/**").hasAnyAuthority( Role.RoleEnum.ADMINISTRATOR.name())
+                .antMatchers("/admin/**").hasAuthority(Role.RoleEnum.ADMINISTRATOR.name())
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -74,8 +74,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/login/redirect", true)
                 .and()
                 .logout().permitAll()
-                .and()
-                .exceptionHandling().accessDeniedPage("/403")
+             /*   .and()
+                .exceptionHandling().accessDeniedPage("/403")*/
         ;
     }
 

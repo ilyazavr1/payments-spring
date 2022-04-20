@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All users</title>
+</head>
+<body>
+
+
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+<div class="container">
+
+
+    <div class="row col-md-6 col-md-offset-2 custyle">
+        <table class="table table-striped custab">
+            <thead>
+
+
+            <tr>
+                <th>ID</th>
+                <th style="padding-right: 150px">First name</th>
+                <th>Last name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Action</th>
+                <th>Cards</th>
+
+            </tr>
+            </thead>
+
+
+            <tr th:each="user : ${userList}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.surname}"></td>
+                <td th:text="${user.email}"></td>
+                <td class="badge badge-primary" th:text="${user.blocked} ?'blocked' : 'not blocked'"></td>
+
+                <form th:if="${user.blocked == false}" th:action="@{/admin/user/{id}/block(id=${user.id})} " method="post">
+                    <input type="hidden" name="paymentId" th:value="${user.id}">
+
+                    <td>
+                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block">
+                            Block
+                        </button>
+                    </td>
+
+                </form>
+                <form th:if="${user.blocked == true}" th:action="@{/admin/user/{id}/unblock(id=${user.id})}" method="post">
+                    <input type="hidden" name="paymentId" th:value="${user.id}">
+
+                    <td>
+                        <button name="action" value="confirm" type="submit" class="btn btn-danger btn-xs    ">
+                            Unblock
+                        </button>
+                    </td>
+
+                </form>
+
+
+               <td> <a th:href="@{/admin/user/{id}/cards(id=${user.id})}" class="btn btn-success">Cards</a></td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+
+</body>
+</html>

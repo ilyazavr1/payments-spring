@@ -56,7 +56,7 @@
                             Confirm
                         </button>
                     </td>
-                   
+
                 </form>
 
                 <td th:if="${param.invalidBalance != null}" >
@@ -65,11 +65,7 @@
                 <td th:if="${param.blockedCard != null}" >
                     <span style="color: red" th:if="${param.blockedCard[0] == payment.id.toString()}" th:text="blockedCard"></span>
                 </td>
-
-
             </tr>
-
-
         </table>
     </div>
 </div>

@@ -2,8 +2,6 @@ package ua.epma.paymentsspring.controller;
 
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -34,7 +32,7 @@ public class ClientController {
 
     @GetMapping("/cards")
     public String getCards(Model model) {
-        model.addAttribute("cardList", cardService.getCardListByUser());
+        model.addAttribute("cardList", cardService.getCardListByCurrentUser());
 
         return "/client/cards";
     }
@@ -89,7 +87,7 @@ public class ClientController {
         if (number == null || number.isEmpty()) return true;
         Card card;
         try {
-            card = cardService.getCardOfCurrentUserByNumber(number);
+            card = cardService.getCardByCurrentUserByNumber(number);
             if (card.isBlocked()) return true;
             model.addAttribute("card", card);
         } catch (InvalidCardNumberException e) {
@@ -115,21 +113,34 @@ public class ClientController {
 
     @GetMapping("/card/payment")
     public String getPayment(Model model) {
-        List<Card> cardList = cardService.getCardListByUser().stream().filter(card -> !card.isBlocked()).collect(Collectors.toList());
+        List<Card> cardList = cardService.getCardListByCurrentUser().stream().filter(card -> !card.isBlocked()).collect(Collectors.toList());
 
         model.addAttribute("paymentDto", new PaymentDto());
         model.addAttribute("cardList", cardList);
         return "/client/payment";
     }
 
+    @PostMapping("/card/unblock-request")
+    private String postMakeRequest(@RequestParam("cardNumber") String cardNumber) {
+
+        try {
+            cardService.makeCardUnblockRequest(cardNumber);
+        } catch (InvalidCardNumberException e) {
+
+            return "redirect:/client/cards";
+        }
+
+        System.out.println(cardNumber);
+        return "redirect:/client/cards";
+    }
+
 
     @PostMapping(value = "/card/payment")
     public String postPaymentSend(@RequestParam("action") String action, Model model, @ModelAttribute("paymentDto") @Valid PaymentDto paymentDto, BindingResult bindingResult) {
-        List<Card> cardList = cardService.getCardListByUser().stream().filter(card -> !card.isBlocked()).collect(Collectors.toList());
+        List<Card> cardList = cardService.getCardListByCurrentUser().stream().filter(card -> !card.isBlocked()).collect(Collectors.toList());
         model.addAttribute("cardList", cardList);
 
         if (bindingResult.hasErrors()) {
-            System.out.println("esty");
             return "/client/payment";
         }
 
@@ -164,7 +175,7 @@ public class ClientController {
             redirectAttributes.addAttribute("invalidBalance", paymentId);
             return "redirect:/client/payments";
         } catch (InvalidCardNumberException e) {
-           // redirectAttributes.addAttribute("inclid", paymentId);
+            // redirectAttributes.addAttribute("inclid", paymentId);
             return "redirect:/client/payments";
         } catch (BlockedCardException e) {
             redirectAttributes.addAttribute("blockedCard", paymentId);

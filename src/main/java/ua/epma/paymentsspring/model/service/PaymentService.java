@@ -2,7 +2,6 @@ package ua.epma.paymentsspring.model.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
@@ -33,7 +32,7 @@ public class PaymentService {
     }
 
     public void makePayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
-        Card cardFrom = cardService.getCardOfCurrentUserByNumber(paymentDto.getCardSenderNumber());
+        Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
         Card cardTo = cardRepository.findByNumber(paymentDto.getCardDestinationNumber());
 
         if (cardService.transferMoney(cardFrom, cardTo, paymentDto.getMoney())) {
@@ -48,12 +47,13 @@ public class PaymentService {
         if (cardService.transferMoney(payment.getCardSenderId(), payment.getCardDestinationId(), payment.getMoney())) {
             payment.setBalance(payment.getBalance() - payment.getMoney());
             payment.setSend(true);
+            payment.setCreationTimestamp(LocalDateTime.now());
             paymentRepository.save(payment);
         }
     }
 
     public void createPreparedPayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
-        Card cardFrom = cardService.getCardOfCurrentUserByNumber(paymentDto.getCardSenderNumber());
+        Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
         Card cardTo = cardRepository.findByNumber(paymentDto.getCardDestinationNumber());
 
 

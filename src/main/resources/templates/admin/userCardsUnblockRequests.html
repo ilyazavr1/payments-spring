@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Card unblock requests</title>
+</head>
+<body>
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+<div class="container">
+
+
+    <div class="row col-md-6 col-md-offset-2 custyle">
+        <table class="table table-striped custab">
+            <thead>
+
+
+            <tr>
+                <th>ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Surname</th>
+                <th>Number</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <!-- <th style="padding-right: 150px">Card name</th>
+                 <th style="padding-right: 150px">Number</th>
+                 <th style="padding-right: 100px">Balance</th>
+                 <th>Status</th>-->
+                <th>Action</th>
+            </tr>
+            </thead>
+
+
+            <tr th:each="card : ${requestList}">
+                <td th:text="${card.id}"></td>
+                <td th:text="${card.userId.firstName}"></td>
+                <td th:text="${card.userId.lastName}"></td>
+                <td th:text="${card.userId.surname}"></td>
+                <td th:text="${card.number}"></td>
+                <td th:text="${card.money}"></td>
+                <td class="badge badge-primary" th:text="${card.blocked} ?'blocked' : 'not blocked'"></td>
+
+              <!--  <form th:if="${card.blocked == false}"
+                      th:action="@{/admin/user/{userId}/card/{cardId}/block(userId=${card.userId.id}, cardId=${card.id})} "
+                      method="get">
+
+
+                    <td>
+                        <button type="submit" class="btn btn-danger btn-xs">
+                            Block
+                        </button>
+                    </td>
+                </form>-->
+                <form th:if="${(card.blocked == true) && (card.underConsideration == true)}" th:action="@{/admin/user/card/unblock} " method="post">
+                    <input type="hidden" name="cardNumber" th:value="${card.number}">
+                    <input type="hidden" name="userId" th:value="${card.userId.id}">
+
+                    <td>
+                        <button type="submit" class="btn btn-success btn-lg btn-block">
+                            Unblock
+                        </button>
+                    </td>
+                </form>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>
