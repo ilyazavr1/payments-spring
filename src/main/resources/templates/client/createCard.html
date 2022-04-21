@@ -19,17 +19,17 @@
             <div style="width:400px; margin-top:30%; margin-left: 30%" class="card">
                 <article class="card-body">
 
-                    <h4 class="card-title mb-4 mt-1">Create card</h4>
+                    <h4 class="card-title mb-4 mt-1"  th:text="#{cardCreate}"></h4>
                     <div style="color: red" class="error-message" th:if="${param.error }"
                          th:text="exception">
                     </div>
                     <div class="form-group">
-                        <label>Input name</label>
+                        <label th:text="#{nameInput}"></label>
                         <input class="form-control" type="text" value="card" name="name">
                     </div>
 
                     <div class="form-group mx-sm-3 mb-2">
-                        <button style="margin-left: 150px" type="submit" class="btn btn-primary">Create</button>
+                        <button style="margin-left: 150px" type="submit" class="btn btn-primary" th:text="#{create}"></button>
                     </div>
 
 

@@ -20,11 +20,11 @@
 
             <tr>
                 <th>ID</th>
-                <th style="padding-right: 150px">Card name</th>
-                <th style="padding-right: 150px">Number</th>
-                <th style="padding-right: 100px">Balance</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th style="padding-right: 150px" th:text="#{cardName}"></th>
+                <th style="padding-right: 150px" th:text="#{number}">Number</th>
+                <th style="padding-right: 100px" th:text="#{balance}"></th>
+                <th th:text="#{status}"></th>
+                <th th:text="#{cardAction}"></th>
             </tr>
             </thead>
 
@@ -42,9 +42,7 @@
 
 
                     <td>
-                        <button type="submit" class="btn btn-danger btn-xs">
-                            Block
-                        </button>
+                        <button type="submit" class="btn btn-danger btn-xs" th:text="#{block}"></button>
                     </td>
                 </form>
                 <form th:if="${card.blocked == true}" th:action="@{/admin/user/card/unblock} " method="post">
@@ -52,9 +50,7 @@
                     <input type="hidden" name="userId" th:value="${card.userId.id}">
 
                     <td>
-                        <button type="submit" class="btn btn-success btn-lg btn-block">
-                            Unblock
-                        </button>
+                        <button type="submit" class="btn btn-success btn-lg btn-block" th:text="#{unblock}"></button>
                     </td>
                 </form>
             </tr>

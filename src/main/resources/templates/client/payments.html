@@ -8,40 +8,75 @@
 <div th:insert="fragments/navBar :: 'header'"></div>
 
 
+<form th:action="@{/client/payments}" method="get">
+    <input th:if="${param.page != null}" type="hidden" name="page" th:value="${param.page[0]}">
+
+    <div style="width: 30%" class="row">
+        <div class="col">
+            <label for="typeSort" th:text="#{sortBy}"> </label>
+            <select name="sort" class="form-control" id="typeSort">
+
+
+                <option th:if="${param.sort == null}" value="creationTimestamp" th:text="#{date}"></option>
+                <option th:if="${param.sort == null}" value="id" th:text="#{number}"></option>
+
+
+                <option th:selected="${param.sort[0] == 'creationTimestamp'}" th:unless="${param.sort == null}" value="creationTimestamp" th:text="#{date}"></option>
+                <option th:selected="${param.sort[0] == 'id'}" th:unless="${param.sort == null}" value="id" th:text="#{number}">></option>
+
+
+            </select>
+        </div>
+        <div class="col">
+            <label for="orderSort" th:text="#{sortingOrder}"></label>
+            <select name="order" class="form-control" id="orderSort">
+
+                <option th:if="${param.order == null}" value="asc" th:text="#{ascending}">asc</option>
+                <option th:if="${param.order == null}" value="desc" th:text="#{descending}">desc</option>
+
+                <option th:selected="${param.order[0] == 'asc'}" th:unless="${param.order == null}" value="asc" th:text="#{ascending}">
+                </option>
+                <option th:selected="${param.order[0] == 'desc'}" th:unless="${param.order == null}" value="desc" th:text="#{descending}">
+                </option>
+            </select>
+        </div>
+        <div class="col">
+            <input class="btn btn-primary" type="submit" th:value="#{sort}"/>
+        </div>
+    </div>
+</form>
+</div>
+
+
 <div class="container">
-
-
     <div class="row col-md-6 col-md-offset-2 custyle">
         <table class="table table-striped custab">
             <thead>
-
-
             <tr>
-                <th>Number</th>
-                <th style="padding-right: 150px">Sender card</th>
-                <th>Balance before</th>
-                <th>Payment sum</th>
-                <th>Balance after</th>
-                <th style="padding-right: 150px">Recipient name</th>
-                <th style="padding-right: 150px">Recipient card</th>
-                <th style="padding-right: 150px">Data</th>
-                <th>Status</th>
-                <th class="text-center">Action</th>
+                <th th:text="#{number}"></th>
+                <th style="padding-right: 150px" th:text="#{senderCard}"></th>
+                <th th:text="#{balanceBefore}"></th>
+                <th th:text="#{paymentSum}"></th>
+                <th th:text="#{balanceAfter}"></th>
+                <th style="padding-right: 150px" th:text="#{recipientName}"></th>
+                <th style="padding-right: 150px" th:text="#{recipientCard}"></th>
+                <th style="padding-right: 150px" th:text="#{date}"></th>
+                <th th:text="#{status}"></th>
+                <th class="text-center" th:text="#{cardAction}"></th>
             </tr>
             </thead>
-
-
             <tr th:each="payment : ${paymentList}">
                 <td th:text="${payment.id}"></td>
                 <td th:text="${payment.cardSenderId.number}"></td>
                 <td>
-                   <span th:if="${payment.send == true}" th:text="${payment.balance}"></span>
-                   <span th:if="${payment.send == false}" th:text="${payment.cardSenderId.money}"></span>
+                    <span th:if="${payment.send == true}" th:text="${payment.balance}"></span>
+                    <span th:if="${payment.send == false}" th:text="${payment.cardSenderId.money}"></span>
                 </td>
                 <td th:text="${payment.money}"></td>
                 <td>
                     <span th:if="${payment.send == true}" th:text="${payment.balance}"></span>
-                    <span th:if="${payment.send == false}" th:text="${payment.cardSenderId.money - payment.money}"></span>
+                    <span th:if="${payment.send == false}"
+                          th:text="${payment.cardSenderId.money - payment.money}"></span>
                 </td>
                 <td th:text="${payment.cardDestinationId.userId.firstName}"></td>
                 <td style="width: 2000px" th:text="${payment.cardDestinationId.number}"></td>
@@ -52,23 +87,34 @@
                     <input type="hidden" name="paymentId" th:value="${payment.id}">
 
                     <td>
-                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block">
-                            Confirm
-                        </button>
+                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block" th:text="#{confirm}"> </button>
                     </td>
 
                 </form>
 
-                <td th:if="${param.invalidBalance != null}" >
-                    <span style="color: red" th:if="${param.invalidBalance[0] == payment.id.toString()}" th:text="INVALID12213"></span>
+                <td th:if="${param.invalidBalance != null}">
+                    <span style="color: red" th:if="${param.invalidBalance[0] == payment.id.toString()}"
+                          th:text="INVALID12213"></span>
                 </td>
-                <td th:if="${param.blockedCard != null}" >
-                    <span style="color: red" th:if="${param.blockedCard[0] == payment.id.toString()}" th:text="blockedCard"></span>
+                <td th:if="${param.blockedCard != null}">
+                    <span style="color: red" th:if="${param.blockedCard[0] == payment.id.toString()}"
+                          th:text="blockedCard"></span>
                 </td>
             </tr>
         </table>
     </div>
 </div>
+
+
+<nav style="padding-left: 10px" staria-label="Page navigation example">
+
+    <ul class="pagination">
+        <li class="page-item active" th:each="i : ${#numbers.sequence(0, (page - 1))}">
+            <a class="page-link" th:href="@{'/client/payments?page=' + ${i} + '&sort=' + ${sort} + '&order=' + ${order}}"
+               th:text="${i+1}"></a>
+        </li>
+    </ul>
+</nav>
 
 
 </body>

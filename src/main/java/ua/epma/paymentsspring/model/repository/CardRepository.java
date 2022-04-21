@@ -1,5 +1,7 @@
 package ua.epma.paymentsspring.model.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,15 +15,17 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
 
     Card findByNumber(String number);
+
     Optional<Card> findById(Long id);
 
     Card findByNumberAndUserId(String number, User user);
 
-
-
     List<Card> findByUserId(User user);
 
     List<Card> findCardByUnderConsiderationTrue();
+
+
+  /*  Page<Card> findAllBy(Pageable pageable);*/
 
 
     // @Query("SELECT u FROM User u where u.role.roleEnum = 'CLIENT'")

@@ -2,6 +2,10 @@ package ua.epma.paymentsspring.controller;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -30,12 +34,73 @@ public class ClientController {
     private final PaymentService paymentService;
 
 
-    @GetMapping("/cards")
+   /* @GetMapping("/cards")
     public String getCards(Model model) {
         model.addAttribute("cardList", cardService.getCardListByCurrentUser());
 
         return "/client/cards";
+    }*/
+
+    @GetMapping(value = "/cards")
+    public String getCards(@RequestParam(defaultValue = "0") String page,
+                           @RequestParam(defaultValue = "name") String sort,
+                           @RequestParam(defaultValue = "desc") String order,
+                           Model model) {
+
+
+        Pageable pageable;
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).ascending());
+        } else pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).descending());
+
+
+        Page<Card> cardPage = cardService.getCardPagination(pageable);
+        List<Card> list = cardPage.getContent();
+
+
+        model.addAttribute("size", cardPage.getTotalElements());
+        model.addAttribute("page", cardPage.getTotalPages());
+        model.addAttribute("sort", sort);
+        model.addAttribute("order", order);
+        model.addAttribute("cardList", list);
+
+
+        return "/client/cards";
     }
+
+
+    @GetMapping("/payments")
+    public String getAllPayments(@RequestParam(defaultValue = "0") String page,
+                                 @RequestParam(defaultValue = "id") String sort,
+                                 @RequestParam(defaultValue = "desc") String order,
+                                 Model model) {
+
+        Pageable pageable;
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).ascending());
+        } else pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).descending());
+
+
+        Page<Payment> paymentPage = paymentService.getPaymentPagination(pageable);
+        List<Payment> paymentList = paymentPage.getContent();
+
+
+        model.addAttribute("size", paymentPage.getTotalElements());
+        model.addAttribute("page", paymentPage.getTotalPages());
+        model.addAttribute("sort", sort);
+        model.addAttribute("order", order);
+        model.addAttribute("paymentList", paymentList);
+
+        for (Payment p : paymentList) {
+            System.out.println(p);
+        }
+        return "/client/payments";
+    }
+
+
+
+
+
 
     @GetMapping("/card/create")
     public String getCardCreate() {
@@ -185,17 +250,6 @@ public class ClientController {
         return "redirect:/client/payments";
     }
 
-    @GetMapping("/payments")
-    public String getAllPayments(Model model) {
-        List<Payment> paymentList = paymentService.getPaymentsByCurrentUser();
-
-        model.addAttribute("paymentList", paymentList);
-
-        for (Payment p : paymentList) {
-            System.out.println(p);
-        }
-        return "/client/payments";
-    }
 
 
 }

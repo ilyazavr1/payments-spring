@@ -14,37 +14,27 @@
         <div style="width:450px; margin-top:30%; margin-left: 30%" class="card">
             <article class="card-body">
 
-                <h4 class="card-title mb-4 mt-1">Confirm</h4>
+                <h4 class="card-title mb-4 mt-1" th:text="#{confirm}"></h4>
                 <form th:action="@{/client/card/{number}/block(number=${card.number})}" method="post">
                     <div class="form-group">
-                        <label>Password</label>
-                        <input name="password" class="form-control" placeholder="password" type="password">
+                        <label th:text="#{password}"></label>
+                        <input name="password" class="form-control" th:placeholder="#{password}" type="password">
                         <div style="color: red" th:if="${param.error}">exception.</div>
                     </div>
-                   <!-- <c:if test="${requestScope.passwordNotValid != null}">
-                        <p style="color: red">
-                            <fmt:message key="${requestScope.passwordNotValid}"/>
-                        </p>
-                    </c:if>
-                    <c:if test="${requestScope.wrongPassword != null}">
-                        <p style="color: red">
-                            <fmt:message key="${requestScope.wrongPassword}"/>
-                        </p>
-                    </c:if>-->
+
                     <div class="form-group mx-sm-3 mb-2">
-                        <button style="margin-left: 150px" type="submit" class="btn btn-primary">Confirm</button>
+                        <button style="margin-left: 150px" type="submit" class="btn btn-primary"
+                                th:text="#{confirm}"></button>
 
 
                         <a th:href="@{/client/cards}"
-                           class="btn btn-danger">Cancel</a>
+                           class="btn btn-danger" th:text="#{cancel}"></a>
                     </div>
-                   <!-- <input type="hidden" name="cardId" value="${requestScope.cardId}">-->
+
                 </form>
             </article>
-        </div> <!-- card.// -->
-
-
-    </div> <!-- row.// -->
+        </div>
+    </div>
 
 </div>
 

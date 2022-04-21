@@ -13,14 +13,14 @@
         <div style="width:400px; margin-top:30%; margin-left: 30%" class="card">
             <article class="card-body">
                 <!--<a href="${Path.REGISTRATION_PATH}" class="float-right btn btn-outline-primary"><fmt:message key="signUp"/></a>-->
-                <h4 class="card-title mb-4 mt-1">Sign in</h4>
+                <h4 class="card-title mb-4 mt-1" th:text="#{signIn}"></h4>
                 <div style="color: red" th:if="${param.error}">
                     Invalid username and password.</div>
                 <form name="f" th:action="@{/login}" method="post">
 
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-user">  Email</i> </span>
+                            <span class="input-group-text"><i class="fa fa-user" th:text="#{email}"></i></span>
                         </div>
                         <input type="text" name="username" class="form-control" id="email"
                                maxlength="64">
@@ -28,7 +28,7 @@
 
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"> Password </span>
+                            <span class="input-group-text" th:text="#{password}"></span>
                         </div>
                         <input type="text" name="password" class="form-control"  id="password"
                                maxlength="64">
@@ -36,7 +36,7 @@
                    <!-- <div style="color: red" class="error-message" th:if="${#fields.hasErrors('password')}"
                          th:text="exception">
                     </div>-->
-                    <button type="submit" class="btn btn-primary" th:text="Go"></button>
+                    <button type="submit" class="btn btn-primary" th:text="#{login}"></button>
 
                 </form>
             </article>

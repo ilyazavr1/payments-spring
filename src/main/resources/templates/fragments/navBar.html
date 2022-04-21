@@ -19,29 +19,27 @@
             <ul class="navbar-nav">
 
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/client/cards}">
-                        My cards
-                    </a>
+                    <a class="nav-link" th:href="@{/client/cards}" th:text="#{navBar.myCards}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/client/card/payment}">
-                        Make payment
-                    </a>
+                    <a class="nav-link" th:href="@{/client/card/payment}" th:text="#{navBar.makePayment}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/client/card/create}">
-                        Make card
-                    </a>
+                    <a class="nav-link" th:href="@{/client/card/create}" th:text="#{navBar.makeCard}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/client/payments}">
-                        My payments
-                    </a>
+                    <a class="nav-link" th:href="@{/client/payments}" th:text="#{navBar.myPayments}"></a>
                 </li>
             </ul>
 
             <div style="margin-left: auto; margin-right: 0;">
-                <span class="badge badge-warning"> <a class="nav-link" href="#">Logout</a></span>
+                <a href="?lang=en" th:if="${#locale.toString().equals('uk')}" th:text="#{changeLanguageTo}"></a>
+                <a href="?lang=uk" th:if="${#locale.toString().equals('en')}" th:text="#{changeLanguageTo}"></a>
+            </div>
+
+            <div style="margin-left: 15px">
+
+                <span class="badge badge-warning" th:text="#{navBar.logout}"></span>
             </div>
         </nav>
         <br>
@@ -58,46 +56,42 @@
             <ul class="navbar-nav">
 
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/admin/users}"> All users</a>
+                    <a class="nav-link" th:href="@{/admin/users}" th:text="#{navBar.allUsers}"></a>
                 </li>
 
 
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/admin/cards/unblock-request}">Requests</a>
+                    <a class="nav-link" th:href="@{/admin/cards/unblock-request}"
+                       th:text="#{navBar.cardsUnblockRequest}"></a>
                 </li>
-
             </ul>
-            <!--      <div style="margin-left: auto; margin-right: 0;">
-                      <c:if test="${sessionScope.lang != null}">
-                          <c:choose>
-                              <c:when test="${sessionScope.lang == 'uk'}">
-                                  <a href="?sessionLocale=en"> <fmt:message key="changeLanguageTo"/></a>
-                              </c:when>
-                              <c:when test="${sessionScope.lang == 'en'}">
-                                  <a href="?sessionLocale=uk"> <fmt:message key="changeLanguageTo"/></a>
-                              </c:when>
-                          </c:choose>
-                      </c:if>
-                      <c:if test="${sessionScope.lang == null}">
-                          <a href="?sessionLocale=en"> <fmt:message key="changeLanguageTo"/></a>
-                      </c:if>
-                  </div>-->
+
             <div style="margin-left: auto; margin-right: 0;">
 
-                <span class="badge badge-warning">Logout </span>
+                <a href="?lang=en" th:if="${#locale.toString().equals('uk')}" th:text="#{changeLanguageTo}"></a>
+                <a href="?lang=uk" th:if="${#locale.toString().equals('en')}" th:text="#{changeLanguageTo}"></a>
+            </div>
+
+            <div style="margin-left: 15px">
+
+                <span class="badge badge-warning" th:text="#{navBar.logout}"></span>
             </div>
 
         </nav>
         <br>
     </div>
     <div sec:authorize="hasAuthority('ROLE_ANONYMOUS')">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 
-        <a class="navbar-brand" href="#">Payments</a>
+            <a class="navbar-brand" href="#">Payments</a>
 
+            <div style="margin-left: auto; margin-right: 0;">
 
-    </nav>
-    <br>
+                <a href="?lang=en" th:if="${#locale.toString().equals('uk')}" th:text="#{changeLanguageTo}"></a>
+                <a href="?lang=uk" th:if="${#locale.toString().equals('en')}" th:text="#{changeLanguageTo}"></a>
+            </div>
+        </nav>
+        <br>
     </div>
 </header>
 

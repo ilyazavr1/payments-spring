@@ -16,18 +16,15 @@
     <div class="row col-md-6 col-md-offset-2 custyle">
         <table class="table table-striped custab">
             <thead>
-
-
             <tr>
-                <th>ID</th>
-                <th style="padding-right: 150px">First name</th>
-                <th>Last name</th>
-                <th>Surname</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Action</th>
-                <th>Cards</th>
-
+                <th th:text="#{number}"></th>
+                <th style="padding-right: 150px" th:text="#{firstName}"></th>
+                <th th:text="#{lastName}"></th>
+                <th th:text="#{surname}"></th>
+                <th th:text="#{email}"></th>
+                <th th:text="#{status}"></th>
+                <th th:text="#{cardAction}"></th>
+                <th th:text="#{cards}"></th>
             </tr>
             </thead>
 
@@ -40,38 +37,32 @@
                 <td th:text="${user.email}"></td>
                 <td class="badge badge-primary" th:text="${user.blocked} ?'blocked' : 'not blocked'"></td>
 
-                <form th:if="${user.blocked == false}" th:action="@{/admin/user/{id}/block(id=${user.id})} " method="post">
+                <form th:if="${user.blocked == false}" th:action="@{/admin/user/{id}/block(id=${user.id})} "
+                      method="post">
                     <input type="hidden" name="paymentId" th:value="${user.id}">
 
                     <td>
-                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block">
-                            Block
-                        </button>
+                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block" th:text="#{block}"></button>
                     </td>
 
                 </form>
-                <form th:if="${user.blocked == true}" th:action="@{/admin/user/{id}/unblock(id=${user.id})}" method="post">
+                <form th:if="${user.blocked == true}" th:action="@{/admin/user/{id}/unblock(id=${user.id})}"
+                      method="post">
                     <input type="hidden" name="paymentId" th:value="${user.id}">
 
                     <td>
-                        <button name="action" value="confirm" type="submit" class="btn btn-danger btn-xs    ">
-                            Unblock
-                        </button>
+                        <button name="action" value="confirm" type="submit" class="btn btn-danger btn-xs" th:text="#{unblock}"></button>
                     </td>
 
                 </form>
 
 
-               <td> <a th:href="@{/admin/user/{id}/cards(id=${user.id})}" class="btn btn-success">Cards</a></td>
+                <td><a th:href="@{/admin/user/{id}/cards(id=${user.id})}" class="btn btn-success" th:text="#{cards}"></a></td>
 
             </tr>
         </table>
     </div>
 </div>
-
-
-
-
 
 
 </body>

@@ -1,6 +1,8 @@
 package ua.epma.paymentsspring.model.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
@@ -30,6 +32,13 @@ public class PaymentService {
     public Payment getPaymentById(Long id) {
         return paymentRepository.getPaymentById(id);
     }
+
+
+    public Page<Payment> getPaymentPagination(Pageable pageable){
+        return paymentRepository.findAll(pageable);
+    }
+
+
 
     public void makePayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
         Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());

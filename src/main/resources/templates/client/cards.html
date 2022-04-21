@@ -10,6 +10,44 @@
 <div th:insert="fragments/navBar :: 'header'"></div>
 
 
+<form th:action="@{/client/cards}" method="get">
+    <input th:if="${param.page != null}" type="hidden" name="page" th:value="${param.page[0]}">
+
+    <div style="width: 30%" class="row">
+        <div class="col">
+            <label for="typeSort"  th:text="#{sortBy}"></label>
+            <select name="sort" class="form-control" id="typeSort">
+
+
+                <option th:if="${param.sort == null}" value="name" th:text="#{name}"></option>
+                <option th:if="${param.sort == null}" value="number" th:text="#{number}"></option>
+                <option th:if="${param.sort == null}" value="money" th:text="#{money}"></option>
+
+
+                <option th:selected="${param.sort[0] == 'name'}" th:unless="${param.sort == null}" value="name" th:text="#{name}">name</option>
+                <option th:selected="${param.sort[0] == 'number'}" th:unless="${param.sort == null}" value="number" th:text="#{number}">number</option>
+                <option th:selected="${param.sort[0] == 'money'}" th:unless="${param.sort == null}" value="money" th:text="#{money}">money</option>
+            </select>
+        </div>
+        <div class="col">
+            <label for="orderSort"  th:text="#{sortingOrder}"></label>
+            <select name="order" class="form-control" id="orderSort">
+
+                <option th:if="${param.order == null}" value="asc" th:text="#{ascending}"></option>
+                <option th:if="${param.order == null}" value="desc" th:text="#{descending}"></option>
+
+                <option th:selected="${param.order[0] == 'asc'}" th:unless="${param.order == null}" value="asc" th:text="#{ascending}"></option>
+                <option th:selected="${param.order[0] == 'desc'}" th:unless="${param.order == null}" value="desc" th:text="#{descending}"></option>
+            </select>
+        </div>
+        <div class="col">
+            <input class="btn btn-primary" type="submit"  th:value="#{sort}"/>
+        </div>
+    </div>
+</form>
+</div>
+
+
 <div class="container">
     <div class="row">
         <div th:each="card : ${cardList}" class="col-sm-4 py-2">
@@ -28,13 +66,13 @@
                             <!-- <input type="hidden" th:value="*{number}" name="cardNumber">-->
 
                             <input style="background-color: lightgreen" type="submit" class="btn btn-outline-secondary"
-                                   value="top up">
+                                   th:value="#{topUp}">
                         </form>
 
                         <form style="float: right; width: 60%"
                               th:action="@{/client/card/{number}/block(number=${card.number})}" method="get">
                             <input style="margin-left: 70px; background-color: lightcoral" type="submit"
-                                   class="btn btn-outline-secondary" value="block">
+                                   class="btn btn-outline-secondary" th:value="#{block}">
                         </form>
                     </div>
                 </div>
@@ -54,7 +92,7 @@
                               method="post">
                             <input type="hidden" name="cardNumber" th:value="${card.number}">
                             <input style="margin-left: 70px; background-color: lightcoral" type="submit"
-                                   class="btn btn-outline-secondary" value="Unblock">
+                                   class="btn btn-outline-secondary" th:value="#{unblock}" >
                         </form>
                     </div>
                 </div>
@@ -70,7 +108,7 @@
                     <p class="card-text" th:text="${card.blocked}">></p>
                     <div>
 
-                        <td class="badge badge-primary" >Under consideration</td>
+                        <td class="badge badge-primary" th:text="#{underConsideration}"></td>
                     </div>
                 </div>
             </div>
@@ -79,6 +117,41 @@
 
 </div>
 
+<nav style="padding-left: 10px" staria-label="Page navigation example">
+
+    <ul class="pagination">
+        <li class="page-item active" th:each="i : ${#numbers.sequence(0, (page - 1))}">
+
+            <!-- <input type="hidden" name="size" th:value="${param.size}" th:unless="${param.size == null}">-->
+
+            <a class="page-link" th:href="@{'/client/cards?page=' + ${i} + '&sort=' + ${sort} + '&order=' + ${order}}"  th:text="${i+1}"></a>
+
+           <!-- <a class="page-link" th:href="@{'/client/cards?page=' + ${page} + '&size=' + ${param.size}}" th:if="${param.size != null}" th:text="${i}"></a>-->
+
+            <!-- <button type="submit" class="page-link" th:text="${i}"> </button>-->
+        </li>
+    </ul>
+</nav>
+<!--
+<form th:action="@{/client/cards}" method="get">
+    &lt;!&ndash;th:href="@{/client/cards?size=param.size&page=i}" &ndash;&gt;
+    <select name="size">
+
+
+        <option th:if="${param.size == null}" value="3">3</option>
+        <option th:if="${param.size == null}" value="6">6</option>
+        <option selected th:if="${param.size == null}" value="9">9</option>
+        <option th:selected="${param.size[0] == '3'}" th:unless="${param.size == null}" value="3">3</option>
+        <option th:selected="${param.size[0] == '6'}" th:unless="${param.size == null}" value="6">6</option>
+        <option th:selected="${param.size[0] == '9'}" th:unless="${param.size == null}" value="9">9</option>
+
+        <input type="submit" value="go">
+    </select>
+
+
+    <h1 th:text="${param.size} "></h1>
+</form>
+-->
 
 </body>
 </html>,

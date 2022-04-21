@@ -2,6 +2,8 @@ package ua.epma.paymentsspring.model.service;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +34,10 @@ public class CardService {
     public Card getCardById(Long id) {
         Optional<Card> card = cardRepository.findById(id);
         return card.orElse(null);
+    }
+
+    public Page<Card> getCardPagination(Pageable pageable){
+       return cardRepository.findAll(pageable);
     }
 
     public List<Card> getCardListByCurrentUser() {

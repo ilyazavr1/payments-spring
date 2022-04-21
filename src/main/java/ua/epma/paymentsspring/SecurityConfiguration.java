@@ -64,6 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID", "remember-me");*/
         http.authorizeRequests()
                 .antMatchers("/registration").permitAll()
+                .antMatchers("/login").permitAll()            //
                 .antMatchers("/client/**").hasAnyAuthority(Role.RoleEnum.CLIENT.name())
                 .antMatchers("/admin/**").hasAuthority(Role.RoleEnum.ADMINISTRATOR.name())
                 .anyRequest().authenticated()
