@@ -6,7 +6,6 @@ import lombok.*;
 import javax.validation.constraints.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -38,5 +37,23 @@ public class UserDto {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     private String password;
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName.trim();
+    }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName.trim();
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname.trim();
+    }
+
+    public void setEmail(String email) {
+        this.email = email.trim();
+    }
+
+    public void setPassword(String password) {
+        this.password = password.trim();
+    }
 }

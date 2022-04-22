@@ -8,14 +8,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ua.epma.paymentsspring.auth.UserDetailsServiceImpl;
 import ua.epma.paymentsspring.model.entity.Role;
 
-import java.util.concurrent.TimeUnit;
+
 
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private static final String SESSION_COOKIE = "JSESSIONID";
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -43,40 +46,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-      /*  http
-                .authorizeRequests()
-                .antMatchers("/cards").hasRole(Role.RoleEnum.CLIENT.name())
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll(true)
-                .usernameParameter("login")
-                .defaultSuccessUrl("/cards", true)
-                .and()
-                .rememberMe()
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(14))
-                .rememberMeParameter("remember-me")
-                .and()
-                .logout()
-                .logoutSuccessUrl("/login")
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me");*/
+
         http.authorizeRequests()
-                .antMatchers("/registration").permitAll()
-                .antMatchers("/login").permitAll()            //
                 .antMatchers("/client/**").hasAnyAuthority(Role.RoleEnum.CLIENT.name())
                 .antMatchers("/admin/**").hasAuthority(Role.RoleEnum.ADMINISTRATOR.name())
-                .anyRequest().authenticated()
+                .antMatchers("/registration").anonymous()
+                .antMatchers("/login").anonymous()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .permitAll()
                 .defaultSuccessUrl("/login/redirect", true)
                 .and()
-                .logout().permitAll()
-             /*   .and()
-                .exceptionHandling().accessDeniedPage("/403")*/
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login")
+                .deleteCookies(SESSION_COOKIE)
+                .invalidateHttpSession(true);
+
+
         ;
     }
 

@@ -21,7 +21,7 @@
 
                     <h4 class="card-title mb-4 mt-1"  th:text="#{cardCreate}"></h4>
                     <div style="color: red" class="error-message" th:if="${param.error }"
-                         th:text="exception">
+                         th:text="#{invalidCardName}">
                     </div>
                     <div class="form-group">
                         <label th:text="#{nameInput}"></label>

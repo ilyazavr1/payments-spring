@@ -37,7 +37,7 @@ public class CardService {
     }
 
     public Page<Card> getCardPagination(Pageable pageable){
-       return cardRepository.findAll(pageable);
+      return cardRepository.findCardsByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()), pageable);
     }
 
     public List<Card> getCardListByCurrentUser() {

@@ -8,14 +8,24 @@
 </head>
 <body>
 <div th:insert="fragments/navBar :: 'header'"></div>
+
+
+
 <div class="container">
     <div class="row">
         <div style="width:400px; margin-top:30%; margin-left: 30%" class="card">
             <article class="card-body">
-                <!--<a href="${Path.REGISTRATION_PATH}" class="float-right btn btn-outline-primary"><fmt:message key="signUp"/></a>-->
+                <a th:href="@{/registration}" class="float-right btn btn-outline-primary" th:text="#{signUp}"></a>
                 <h4 class="card-title mb-4 mt-1" th:text="#{signIn}"></h4>
-                <div style="color: red" th:if="${param.error}">
-                    Invalid username and password.</div>
+
+<!--<h1 th:text="${session.size() }"></h1>
+<h1 th:if="${session != null}" th:text="${session.get('SPRING_SECURITY_LAST_EXCEPTION') != null }"></h1>-->
+                <div class="mb-3 text-center" th:if="${session != null && session.get('SPRING_SECURITY_LAST_EXCEPTION') != null }" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+
+                    <div style="color: red" th:if="${errorMsg.equals('Bad credentials')}" th:text="#{authenticationFailed}"></div>
+                    <div style="color: red" th:if="${errorMsg.equals('User account is locked')}" th:text="#{userIsBlocked}"></div>
+                </div>
+
                 <form name="f" th:action="@{/login}" method="post">
 
                     <div class="form-group input-group">

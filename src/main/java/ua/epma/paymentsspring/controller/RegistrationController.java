@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class RegistrationController {
 
 
     @PostMapping(UriPath.REGISTRATION)
-    public String getRegistration(@ModelAttribute(name = "userDto") @Valid UserDto userDto, BindingResult bindingResult) {
+    public String getRegistration(@ModelAttribute(name = "userDto") @Valid UserDto userDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return UriPath.REGISTRATION;
         }
@@ -52,7 +53,8 @@ public class RegistrationController {
             user = userService.registerUser(userDto);
             System.out.println("POST - " + user);
         } catch (UserAlreadyExistException e) {
-            e.printStackTrace();
+            model.addAttribute("emailExists", "emailExists");
+           return UriPath.REGISTRATION;
         }
 
         return UriPath.LOGIN;

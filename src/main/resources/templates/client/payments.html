@@ -80,8 +80,8 @@
                 </td>
                 <td th:text="${payment.cardDestinationId.userId.firstName}"></td>
                 <td style="width: 2000px" th:text="${payment.cardDestinationId.number}"></td>
-                <td th:text="${payment.creationTimestamp}"></td>
-                <td class="badge badge-primary" th:text="${payment.send} ?'Send' : 'Pepared'"></td>
+                <td th:text="${#temporals.format(payment.creationTimestamp, 'dd-MM-yyyy HH:mm')}"></td>
+                <td class="badge badge-primary" th:text="${payment.send} ? #{statusSent} :#{statusPrepared}"></td>
 
                 <form th:if="${payment.send == false}" th:action="@{/client/card/payment}" method="post">
                     <input type="hidden" name="paymentId" th:value="${payment.id}">
@@ -94,11 +94,11 @@
 
                 <td th:if="${param.invalidBalance != null}">
                     <span style="color: red" th:if="${param.invalidBalance[0] == payment.id.toString()}"
-                          th:text="INVALID12213"></span>
+                          th:text="#{outOfMoney}"></span>
                 </td>
                 <td th:if="${param.blockedCard != null}">
                     <span style="color: red" th:if="${param.blockedCard[0] == payment.id.toString()}"
-                          th:text="blockedCard"></span>
+                          th:text="#{blocked}"></span>
                 </td>
             </tr>
         </table>

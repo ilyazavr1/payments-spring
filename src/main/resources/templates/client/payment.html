@@ -29,7 +29,7 @@
                         >
                     </select>
                 </div>
-                <div style="color: red" class="error-message" th:if="${invalidBalance}"> invalidBalance</div>
+                <div style="color: red" class="error-message" th:if="${invalidBalance}" th:text="#{outOfMoney}"></div>
 
                 <div class="form-group">
                     <label th:text="#{recipientCard}"> </label>
@@ -37,8 +37,8 @@
                 </div>
 
                 <div style="color: red" class="error-message" th:if="${#fields.hasErrors('cardDestinationNumber')}" th:text="exception"></div>
-                <div style="color: red" class="error-message" th:if="${invalidCardNumber}"> invalidCardNumber</div>
-                <div style="color: red" class="error-message" th:if="${blockedCard}"> blockedCard</div>
+                <div style="color: red" class="error-message" th:if="${invalidCardNumber}" th:text="#{invalidCardNumber}"></div>
+                <div style="color: red" class="error-message" th:if="${blockedCard}" th:text="#{cardDestinationIsBlocked}"> blockedCard</div>
 
                 <div class="row">
                     <label class="col-md-12" th:text="#{amount}"> </label>
@@ -52,7 +52,7 @@
                 </div>
 
                 <div style="color: red" class="error-message" th:if="${#fields.hasErrors('money')}"
-                     th:text="exception">
+                     th:text="#{invalidMoneyAmount}">
                 </div>
 
                 <hr>

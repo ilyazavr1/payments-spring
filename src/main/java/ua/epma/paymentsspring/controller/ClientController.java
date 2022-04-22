@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -91,9 +92,6 @@ public class ClientController {
         model.addAttribute("order", order);
         model.addAttribute("paymentList", paymentList);
 
-        for (Payment p : paymentList) {
-            System.out.println(p);
-        }
         return "/client/payments";
     }
 
@@ -231,7 +229,7 @@ public class ClientController {
     @PostMapping(value = "/card/payment", params = "action=confirm")
     public String postPaymentConfirm(@RequestParam("paymentId") String paymentId, RedirectAttributes redirectAttributes) {
 
-        System.out.println(paymentService.getPaymentById(Long.valueOf(paymentId)));
+
 
 
         try {
@@ -240,7 +238,7 @@ public class ClientController {
             redirectAttributes.addAttribute("invalidBalance", paymentId);
             return "redirect:/client/payments";
         } catch (InvalidCardNumberException e) {
-            // redirectAttributes.addAttribute("inclid", paymentId);
+
             return "redirect:/client/payments";
         } catch (BlockedCardException e) {
             redirectAttributes.addAttribute("blockedCard", paymentId);

@@ -57,13 +57,15 @@
                     <h3 class="card-title" th:text="${card.number}"></h3>
                     <h3 class="card-title" th:text="${card.name}"> ></h3>
                     <p class="card-text" th:text="${card.money}">></p>
-                    <p class="card-text" th:text="${card.blocked}">></p>
+
+                    <p class="card-text" th:text="#{active}">></p>
+
+
                     <div>
 
                         <form style="float: left; width: 40%"
                               th:action="@{/client/card/{number}/top-up(number=${card.number})}" method="get"
                               th:object="${card}">
-                            <!-- <input type="hidden" th:value="*{number}" name="cardNumber">-->
 
                             <input style="background-color: lightgreen" type="submit" class="btn btn-outline-secondary"
                                    th:value="#{topUp}">
@@ -85,7 +87,7 @@
                     <h3 class="card-title" th:text="${card.number}"></h3>
                     <h3 class="card-title" th:text="${card.name}"> ></h3>
                     <p class="card-text" th:text="${card.money}">></p>
-                    <p class="card-text" th:text="${card.blocked}">></p>
+                    <p class="card-text"  th:text="#{blocked}">></p>
                     <div>
 
                         <form style="float: right; width: 60%" th:action="@{/client/card/unblock-request}"
@@ -105,7 +107,7 @@
                     <h3 class="card-title" th:text="${card.number}"></h3>
                     <h3 class="card-title" th:text="${card.name}"> ></h3>
                     <p class="card-text" th:text="${card.money}">></p>
-                    <p class="card-text" th:text="${card.blocked}">></p>
+
                     <div>
 
                         <td class="badge badge-primary" th:text="#{underConsideration}"></td>

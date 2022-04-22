@@ -30,6 +30,9 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/client/payments}" th:text="#{navBar.myPayments}"></a>
                 </li>
+                <li>
+                    <span style="color: darkgray" th:text ="${#authentication.getPrincipal().getUsername()}"></span>
+                </li>
             </ul>
 
             <div style="margin-left: auto; margin-right: 0;">
@@ -38,8 +41,8 @@
             </div>
 
             <div style="margin-left: 15px">
+                <a class="badge badge-warning" th:href="@{/logout}" th:text="#{navBar.logout}"></a>
 
-                <span class="badge badge-warning" th:text="#{navBar.logout}"></span>
             </div>
         </nav>
         <br>
@@ -73,8 +76,8 @@
             </div>
 
             <div style="margin-left: 15px">
+                <a class="badge badge-warning" th:href="@{/logout}" th:text="#{navBar.logout}"></a>
 
-                <span class="badge badge-warning" th:text="#{navBar.logout}"></span>
             </div>
 
         </nav>
