@@ -71,6 +71,7 @@ public class AdminController {
     @GetMapping("/cards/unblock-request")
     public String getCardsUnblockRequest(Model model) {
 
+
         model.addAttribute("requestList", cardService.getCardUnblockRequest());
 
         return "/admin/userCardsUnblockRequests";
@@ -94,7 +95,9 @@ public class AdminController {
 
 
     @PostMapping("/user/card/unblock")
-    public String postCardUnlock(@RequestParam("cardNumber") String cardNumber, @RequestParam("userId") String clientId, HttpServletRequest request) {
+    public String postCardUnlock(@RequestParam("cardNumber") String cardNumber,
+                                 @RequestParam("userId") String clientId,
+                                 @RequestParam(value = "requestId", required = false) String requestId, HttpServletRequest request) {
         String referer;
         try {
             cardService.unblockCardByNumber(cardNumber);
@@ -103,7 +106,13 @@ public class AdminController {
             return "redirect:/admin/user/" + clientId + "/cards";
         }
         System.out.println(referer);
-        if (referer.contains("unblock-request")) return "redirect:/admin/cards/unblock-request";
+        if (referer.contains("unblock-request")) {
+            if (!requestId.isEmpty()) {
+                cardService.processedCardUnblockRequest(Long.valueOf(requestId));
+            }
+            return "redirect:/admin/cards/unblock-request";
+        }
+
 
         return "redirect:/admin/user/" + clientId + "/cards";
     }

@@ -74,7 +74,9 @@ public class ClientController {
     public String getAllPayments(@RequestParam(defaultValue = "0") String page,
                                  @RequestParam(defaultValue = "id") String sort,
                                  @RequestParam(defaultValue = "desc") String order,
-                                 Model model) {
+                                 Model model) throws InvalidCardNumberException {
+
+
 
         Pageable pageable;
         if (order.equals("asc")) {

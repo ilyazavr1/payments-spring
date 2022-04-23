@@ -32,12 +32,6 @@ public class RegistrationController {
     public String getRegistration(Model model) {
         model.addAttribute("userDto", new UserDto());
 
-        User user = userService.getUserById(1L);
-
-        if (user != null) {
-            model.addAttribute("user", user);
-        }
-
         return UriPath.REGISTRATION;
     }
 
@@ -51,7 +45,6 @@ public class RegistrationController {
         User user;
         try {
             user = userService.registerUser(userDto);
-            System.out.println("POST - " + user);
         } catch (UserAlreadyExistException e) {
             model.addAttribute("emailExists", "emailExists");
            return UriPath.REGISTRATION;

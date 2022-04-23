@@ -23,24 +23,25 @@
                 <th th:text="#{surname}"></th>
                 <th th:text="#{number}"></th>
                 <th th:text="#{balance}"></th>
-                <th th:text="#{status}"></th>
+         <!--       <th th:text="#{status}"></th>-->
                 <th th:text="#{cardAction}"></th>
             </tr>
             </thead>
 
 
-            <tr th:each="card : ${requestList}">
-                <td th:text="${card.id}"></td>
-                <td th:text="${card.userId.firstName}"></td>
-                <td th:text="${card.userId.lastName}"></td>
-                <td th:text="${card.userId.surname}"></td>
-                <td th:text="${card.number}"></td>
-                <td th:text="${card.money}"></td>
-                <td class="badge badge-primary" th:text="${card.blocked} ?'blocked' : 'not blocked'"></td>
+            <tr th:each="request : ${requestList}">
+                <td th:text="${request.id}"></td>
+                <td th:text="${request.userId.firstName}"></td>
+                <td th:text="${request.userId.lastName}"></td>
+                <td th:text="${request.userId.surname}"></td>
+                <td th:text="${request.cardId.number}"></td>
+                <td th:text="${request.cardId.money}"></td>
+              <!--  <td class="badge badge-primary" th:text="${request.card_id.blocked} ?'blocked' : 'not blocked'"></td>-->
 
-                <form th:if="${(card.blocked == true) && (card.underConsideration == true)}" th:action="@{/admin/user/card/unblock} " method="post">
-                    <input type="hidden" name="cardNumber" th:value="${card.number}">
-                    <input type="hidden" name="userId" th:value="${card.userId.id}">
+                <form th:if="${(request.processed == false)}" th:action="@{/admin/user/card/unblock} " method="post">
+                    <input type="hidden" name="cardNumber" th:value="${request.cardId.number}">
+                    <input type="hidden" name="userId" th:value="${request.userId.id}">
+                    <input type="hidden" name="requestId" th:value="${request.id}">
 
                     <td>
                         <button type="submit" class="btn btn-success btn-lg btn-block" th:text="#{unblock}"></button>

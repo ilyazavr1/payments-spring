@@ -36,7 +36,7 @@
                     <input name="cardDestinationNumber" type="text"  th:field="*{cardDestinationNumber}" class="form-control">
                 </div>
 
-                <div style="color: red" class="error-message" th:if="${#fields.hasErrors('cardDestinationNumber')}" th:text="exception"></div>
+                <div style="color: red" class="error-message" th:if="${#fields.hasErrors('cardDestinationNumber')}" th:text="#{invalidCardNumber}"></div>
                 <div style="color: red" class="error-message" th:if="${invalidCardNumber}" th:text="#{invalidCardNumber}"></div>
                 <div style="color: red" class="error-message" th:if="${blockedCard}" th:text="#{cardDestinationIsBlocked}"> blockedCard</div>
 
@@ -59,10 +59,10 @@
                 <div class="form-group row">
 
                     <div class="col-md-6">
-                        <button name="action" value="prepare" type="submit" class="btn btn-warning btn-lg btn-block" th:text="#{prepare}"></button>
+                        <button name="action" th:disabled="${cardList.size() == 0}" value="prepare" type="submit" class="btn btn-warning btn-lg btn-block" th:text="#{prepare}"></button>
                     </div>
                     <div class="col-md-6">
-                        <button name="action" value="send" type="submit" class="btn btn-success btn-lg btn-block" th:text="#{send}"></button>
+                        <button name="action" th:disabled="${cardList.size() == 0}" value="send" type="submit" class="btn btn-success btn-lg btn-block" th:text="#{send}"></button>
                     </div>
                 </div>
             </form>

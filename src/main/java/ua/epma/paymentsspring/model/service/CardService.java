@@ -4,6 +4,7 @@ package ua.epma.paymentsspring.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,10 +13,12 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.entity.Card;
+import ua.epma.paymentsspring.model.entity.CardUnblockRequest;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
 import ua.epma.paymentsspring.model.excwption.*;
 import ua.epma.paymentsspring.model.repository.CardRepository;
+import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
 
@@ -29,6 +32,7 @@ public class CardService {
 
     private CardRepository cardRepository;
     private UserRepository userRepository;
+    private CardUnblockRequestRepository cardUnblockRequestRepository;
 
 
     public Card getCardById(Long id) {
@@ -36,8 +40,8 @@ public class CardService {
         return card.orElse(null);
     }
 
-    public Page<Card> getCardPagination(Pageable pageable){
-      return cardRepository.findCardsByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()), pageable);
+    public Page<Card> getCardPagination(Pageable pageable) {
+        return cardRepository.findCardsByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()), pageable);
     }
 
     public List<Card> getCardListByCurrentUser() {
@@ -54,8 +58,10 @@ public class CardService {
         return cardRepository.findByUserId(id);
     }
 
-    public List<Card> getCardUnblockRequest(){
-        return cardRepository.findCardByUnderConsiderationTrue();
+    public List<CardUnblockRequest> getCardUnblockRequest() {
+        List<CardUnblockRequest> list = cardUnblockRequestRepository.findAllByOrderByIdDesc();
+        /* list.stream().filter(rqs -> (!rqs.getCard_id().isBlocked() && !rqs.isProcessed())).forEach(rqs -> rqs.setProcessed(true));*/
+        return cardUnblockRequestRepository.findAllByOrderByIdDesc();
     }
 
     public void updateCardWithMoney(String number, String money) throws BlockedCardException, InvalidMoneyAmountException {
@@ -91,10 +97,20 @@ public class CardService {
         Card card = cardRepository.findByNumber(number);
         if (card == null) throw new InvalidCardNumberException();
 
+        if (card.isUnderConsideration()) {
+            updateRequests(card);
+        }
+
         card.setBlocked(false);
         card.setUnderConsideration(false);
 
         cardRepository.save(card);
+    }
+
+    private void updateRequests(Card card) {
+        CardUnblockRequest request = cardUnblockRequestRepository.findTopByCardIdOrderByIdDesc(card);
+        request.setProcessed(true);
+        cardUnblockRequestRepository.save(request);
     }
 
     public void blockCardByNumber(String number, String password) throws InvalidCardNumberException, AuthenticationFailedException {
@@ -116,14 +132,20 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    public void processedCardUnblockRequest(Long id) {
+        CardUnblockRequest request = cardUnblockRequestRepository.getById(id);
+        request.setProcessed(true);
+        cardUnblockRequestRepository.save(request);
+    }
+
     public void makeCardUnblockRequest(String number) throws InvalidCardNumberException {
         Card card = cardRepository.findByNumber(number);
-
         if (card == null) throw new InvalidCardNumberException();
 
         card.setUnderConsideration(true);
 
         cardRepository.save(card);
+        cardUnblockRequestRepository.save(CardUnblockRequest.builder().cardId(card).userId(card.getUserId()).isProcessed(false).build());
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)

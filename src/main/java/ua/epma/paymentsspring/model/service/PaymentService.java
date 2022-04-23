@@ -35,7 +35,9 @@ public class PaymentService {
 
 
     public Page<Payment> getPaymentPagination(Pageable pageable){
-        return paymentRepository.findAll(pageable);
+
+
+        return paymentRepository.findPaymentsByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),pageable);
     }
 
 

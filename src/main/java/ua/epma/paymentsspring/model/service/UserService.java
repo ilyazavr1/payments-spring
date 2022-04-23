@@ -20,19 +20,20 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
-    public User getUserById(Long id) throws RuntimeException {
-        User user = userRepository.findById(id).orElse(null);
+  /*  public User getUserById(Long id) throws RuntimeException {
 
-        return user;
-    }
+        return userRepository.findById(id).orElse(null);
+    }*/
 
+/*
     public User getUserByEmail(String email) throws RuntimeException {
         User user = userRepository.findByEmail(email);
 
         return user;
     }
+*/
 
 
     public List<User> getAllUsers(){
@@ -72,7 +73,7 @@ public class UserService {
     }
 
 
-    private boolean emailExists(String email) {
+    public boolean emailExists(String email) {
         return userRepository.findByEmail(email) != null;
     }
 

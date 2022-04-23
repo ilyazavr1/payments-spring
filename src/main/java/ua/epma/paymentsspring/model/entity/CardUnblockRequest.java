@@ -27,6 +27,9 @@ public class CardUnblockRequest {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "card_id", nullable = false)
-    private Card card_id;
+    private Card cardId;
+
+    @Column(name = "processed" )
+    boolean isProcessed;
 
 }
