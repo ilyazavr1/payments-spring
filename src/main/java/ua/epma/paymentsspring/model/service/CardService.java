@@ -49,7 +49,9 @@ public class CardService {
     }
 
     public Card getCardByCurrentUserByNumber(String number) throws InvalidCardNumberException {
+
         Card card = cardRepository.findByNumberAndUserId(number, userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+
         if (card == null) throw new InvalidCardNumberException();
         return card;
     }
@@ -60,7 +62,7 @@ public class CardService {
 
     public List<CardUnblockRequest> getCardUnblockRequest() {
         List<CardUnblockRequest> list = cardUnblockRequestRepository.findAllByOrderByIdDesc();
-        /* list.stream().filter(rqs -> (!rqs.getCard_id().isBlocked() && !rqs.isProcessed())).forEach(rqs -> rqs.setProcessed(true));*/
+
         return cardUnblockRequestRepository.findAllByOrderByIdDesc();
     }
 
@@ -158,7 +160,6 @@ public class CardService {
 
         cardRepository.save(cardFrom);
         cardRepository.save(cardTo);
-
         return true;
     }
 
@@ -180,7 +181,7 @@ public class CardService {
         return moneyInt;
     }
 
-    private static String generateCardNumber() {
+    public String generateCardNumber() {
         long randomNum = ThreadLocalRandom.current().nextLong(1, 1_0000_0000_0000L);
 
         if (String.valueOf(randomNum).length() < 12) {
