@@ -12,6 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @Builder
+@EqualsAndHashCode
 @Table(name = "card_unblock_requests")
 public class CardUnblockRequest {
 

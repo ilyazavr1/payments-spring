@@ -35,12 +35,8 @@ public class PaymentService {
 
 
     public Page<Payment> getPaymentPagination(Pageable pageable){
-
-
         return paymentRepository.findPaymentsByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),pageable);
     }
-
-
 
     public void makePayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
         Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
@@ -49,6 +45,7 @@ public class PaymentService {
         if (cardService.transferMoney(cardFrom, cardTo, paymentDto.getMoney())) {
             Payment payment = createPaymentWithStatus(paymentDto, cardFrom, cardTo, true);
             payment.setBalance(cardFrom.getMoney() + payment.getMoney());
+
             paymentRepository.save(payment);
         }
     }

@@ -117,8 +117,10 @@ public class CardService {
 
     public void blockCardByNumber(String number, String password) throws InvalidCardNumberException, AuthenticationFailedException {
         Card card;
+
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())) {
             card = cardRepository.findByNumber(number);
+
         } else card = getCardByCurrentUserByNumber(number);
 
         if (card == null || card.isBlocked()) return;
@@ -126,6 +128,7 @@ public class CardService {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
 
         User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+
 
         if (!encoder.matches(password, user.getPassword())) throw new AuthenticationFailedException();
 
@@ -164,8 +167,6 @@ public class CardService {
     }
 
     public boolean validateTransfer(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
-        /*if (money <= 0 || money > 10000) throw new InvalidMoneyAmountException();*/
-
         if (cardTo == null || cardFrom.getNumber().equals(cardTo.getNumber())) throw new InvalidCardNumberException();
         if (cardFrom.isBlocked() || cardTo.isBlocked()) throw new BlockedCardException();
         if ((cardFrom.getMoney() - money) < 0) throw new InvalidBalanceOnCardException();
