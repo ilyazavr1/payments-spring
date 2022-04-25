@@ -2,6 +2,7 @@ package ua.epma.paymentsspring.controller;
 
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import ua.epma.paymentsspring.model.service.UserService;
 
 import javax.validation.Valid;
 
+@Log4j2
 @AllArgsConstructor
 @Controller
 public class RegistrationController {
@@ -46,10 +48,11 @@ public class RegistrationController {
         try {
             user = userService.registerUser(userDto);
         } catch (UserAlreadyExistException e) {
+            log.warn("Email {} is registered", userDto.getEmail());
             model.addAttribute("emailExists", "emailExists");
-           return UriPath.REGISTRATION;
+            return UriPath.REGISTRATION;
         }
-
+        log.warn("User registered with email: {}", user.getEmail());
         return UriPath.LOGIN;
     }
 
@@ -60,9 +63,17 @@ public class RegistrationController {
     }
 
     @GetMapping(UriPath.LOGIN_REDIRECT)
-    public String redirect(@RequestParam(value = "user", defaultValue = "false") String loginError,Authentication authentication) {
-        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.CLIENT.name())) return "redirect:" + UriPath.CLIENT_CARDS;
-        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())) return "redirect:" + UriPath.ADMIN_TEST;
+    public String redirect(@RequestParam(value = "user", defaultValue = "false") String loginError, Authentication authentication) {
+
+        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.CLIENT.name())){
+            log.info("{} logged in with email: {}" ,Role.RoleEnum.CLIENT.name(), authentication.getName());
+            return "redirect:" + UriPath.CLIENT_CARDS;
+        }
+
+        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())){
+            log.info("{} logged in with email: {}" ,Role.RoleEnum.ADMINISTRATOR.name(), authentication.getName());
+            return "redirect:" + UriPath.ADMIN_TEST;
+        }
 
         return UriPath.LOGIN;
     }

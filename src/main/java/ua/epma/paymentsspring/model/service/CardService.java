@@ -66,12 +66,20 @@ public class CardService {
         return cardUnblockRequestRepository.findAllByOrderByIdDesc();
     }
 
+
+    /**
+     * Adds the money amount to the card
+     * @param number Card number
+     * @param money money to add to the Card
+     * @throws BlockedCardException if Card is blocked
+     * @throws InvalidMoneyAmountException if wrong card number
+     */
     public void updateCardWithMoney(String number, String money) throws BlockedCardException, InvalidMoneyAmountException {
         Card card;
         try {
             card = getCardByCurrentUserByNumber(number);
         } catch (InvalidCardNumberException e) {
-            throw new RuntimeException();
+            return;
         }
         if (card.isBlocked()) throw new BlockedCardException();
 
@@ -81,6 +89,14 @@ public class CardService {
 
     }
 
+    /**
+     * Validates card name.
+     * Generates card number, if it exists interrupts method.
+     * Creates new card signed to User in current session.
+     * Saves new card to database.
+     * @param name card name
+     * @throws InvalidCardName if name is invalid
+     */
     public void createCard(String name) throws InvalidCardName {
         if (name.length() > 30 || name.length() < 3) throw new InvalidCardName();
         String number = generateCardNumber();
@@ -95,6 +111,13 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    /**
+     * Checks whether the card is under considered, if so, then updates the unlock requests.
+     * Unblock card and sets under consideration to false.
+     * Saves Card to database.
+     * @param number Card number
+     * @throws InvalidCardNumberException if card number is wrong
+     */
     public void unblockCardByNumber(String number) throws InvalidCardNumberException {
         Card card = cardRepository.findByNumber(number);
         if (card == null) throw new InvalidCardNumberException();
@@ -109,12 +132,24 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    /**
+     * Method updates the status of the request by changing it to the processed.
+     *
+     * @param card unblocked Card for which the unlock request must be updated
+     */
     private void updateRequests(Card card) {
         CardUnblockRequest request = cardUnblockRequestRepository.findTopByCardIdOrderByIdDesc(card);
         request.setProcessed(true);
         cardUnblockRequestRepository.save(request);
     }
 
+    /**
+     * If user entered right password than blocks card by number.
+     * @param number card number
+     * @param password user entered password
+     * @throws InvalidCardNumberException if card number is wrong
+     * @throws AuthenticationFailedException is user entered wrong password
+     */
     public void blockCardByNumber(String number, String password) throws InvalidCardNumberException, AuthenticationFailedException {
         Card card;
 
@@ -137,12 +172,22 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    /**
+     * Changes status of unblock request to processed.
+     * @param id request id
+     */
     public void processedCardUnblockRequest(Long id) {
         CardUnblockRequest request = cardUnblockRequestRepository.getById(id);
         request.setProcessed(true);
         cardUnblockRequestRepository.save(request);
     }
 
+    /**
+     *  Changes status of card to under consideration.
+     *  Creates card unblock request.
+     * @param number card number
+     * @throws InvalidCardNumberException if card number is wrong
+     */
     public void makeCardUnblockRequest(String number) throws InvalidCardNumberException {
         Card card = cardRepository.findByNumber(number);
         if (card == null) throw new InvalidCardNumberException();

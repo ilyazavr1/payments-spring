@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 
+/**
+ * Service for business logic related with User.
+ * @author Illia
+ */
 @AllArgsConstructor
 @Service
 public class UserService {
@@ -22,40 +26,34 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
-  /*  public User getUserById(Long id) throws RuntimeException {
 
-        return userRepository.findById(id).orElse(null);
-    }*/
-
-/*
-    public User getUserByEmail(String email) throws RuntimeException {
-        User user = userRepository.findByEmail(email);
-
-        return user;
-    }
-*/
-
-
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.getUsers();
     }
 
-    public void blockUserById(Long id){
+    public User blockUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             user.get().setBlocked(true);
-            userRepository.save(user.get());
-        };
+            return userRepository.save(user.get());
+        }
+        return null;
     }
 
-    public void unblockUserById(Long id){
+    public User unblockUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             user.get().setBlocked(false);
-            userRepository.save(user.get());
-        };
+           return userRepository.save(user.get());
+        }
+        return null;
     }
 
+    /**
+     * @param userDto UserDto object that contains validated information for creating User.
+     * @return saved User in database.
+     * @throws UserAlreadyExistException if email already exists in database.
+     */
     public User registerUser(UserDto userDto) throws UserAlreadyExistException {
         if (emailExists(userDto.getEmail())) throw new UserAlreadyExistException();
 
