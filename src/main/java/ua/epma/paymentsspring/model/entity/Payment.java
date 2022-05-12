@@ -38,6 +38,10 @@ public class Payment {
     private User userId;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_destination_id", nullable = false)
+    private User userDestinationId;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "card_sender_id", nullable = false)
     private Card cardSenderId;
 

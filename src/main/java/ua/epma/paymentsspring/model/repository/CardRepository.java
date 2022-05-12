@@ -9,7 +9,7 @@ import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.User;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface CardRepository extends JpaRepository<Card, Long> {
 
@@ -22,13 +22,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     List<Card> findByUserId(User user);
 
-    List<Card> findCardByUnderConsiderationTrue();
 
 
-  /*  Page<Card> findAllBy(Pageable pageable);*/
-
-
-    // @Query("SELECT u FROM User u where u.role.roleEnum = 'CLIENT'")
     @Query("SELECT c FROM Card c where c.userId.id = :id")
     List<Card> findByUserId(@Param(value="id") Long id);
 

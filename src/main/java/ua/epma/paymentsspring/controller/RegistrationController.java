@@ -20,6 +20,7 @@ import ua.epma.paymentsspring.model.excwption.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.service.UserService;
 
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Log4j2
@@ -63,15 +64,17 @@ public class RegistrationController {
     }
 
     @GetMapping(UriPath.LOGIN_REDIRECT)
-    public String redirect(@RequestParam(value = "user", defaultValue = "false") String loginError, Authentication authentication) {
+    public String redirect(@RequestParam(value = "user", defaultValue = "false") String loginError, Authentication authentication, HttpSession session) {
 
-        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.CLIENT.name())){
-            log.info("{} logged in with email: {}" ,Role.RoleEnum.CLIENT.name(), authentication.getName());
+        session.setAttribute("user", userService.findUserByEmail(authentication.getName()));
+
+        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.CLIENT.name())) {
+            log.info("{} logged in with email: {}", Role.RoleEnum.CLIENT.name(), authentication.getName());
             return "redirect:" + UriPath.CLIENT_CARDS;
         }
 
-        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())){
-            log.info("{} logged in with email: {}" ,Role.RoleEnum.ADMINISTRATOR.name(), authentication.getName());
+        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())) {
+            log.info("{} logged in with email: {}", Role.RoleEnum.ADMINISTRATOR.name(), authentication.getName());
             return "redirect:" + UriPath.ADMIN_TEST;
         }
 

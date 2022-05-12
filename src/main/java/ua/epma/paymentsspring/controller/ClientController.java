@@ -17,12 +17,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
+import ua.epma.paymentsspring.model.entity.User;
 import ua.epma.paymentsspring.model.excwption.*;
 import ua.epma.paymentsspring.model.service.CardService;
 import ua.epma.paymentsspring.model.service.PaymentService;
 import ua.epma.paymentsspring.model.service.UserService;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,20 +43,21 @@ public class ClientController {
     public String getCards(@RequestParam(defaultValue = "0") String page,
                            @RequestParam(defaultValue = "name") String sort,
                            @RequestParam(defaultValue = "desc") String order,
+                           @RequestParam(defaultValue = "9") String size,
                            Model model) {
 
 
         Pageable pageable;
         if (order.equals("asc")) {
-            pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).ascending());
-        } else pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).descending());
+            pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).ascending());
+        } else pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).descending());
 
 
         Page<Card> cardPage = cardService.getCardPagination(pageable);
         List<Card> list = cardPage.getContent();
 
 
-        model.addAttribute("size", cardPage.getTotalElements());
+        model.addAttribute("size", size);
         model.addAttribute("page", cardPage.getTotalPages());
         model.addAttribute("sort", sort);
         model.addAttribute("order", order);
@@ -68,20 +72,22 @@ public class ClientController {
     public String getAllPayments(@RequestParam(defaultValue = "0") String page,
                                  @RequestParam(defaultValue = "id") String sort,
                                  @RequestParam(defaultValue = "desc") String order,
-                                 Model model) throws InvalidCardNumberException {
+                                 @RequestParam(defaultValue = "9") String size,
+                                 Model model, HttpSession session) throws InvalidCardNumberException {
 
 
         Pageable pageable;
         if (order.equals("asc")) {
-            pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).ascending());
-        } else pageable = PageRequest.of(Integer.parseInt(page), 9, Sort.by(sort).descending());
+            pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).ascending());
+        } else pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).descending());
 
 
         Page<Payment> paymentPage = paymentService.getPaymentPagination(pageable);
         List<Payment> paymentList = paymentPage.getContent();
 
 
-        model.addAttribute("size", paymentPage.getTotalElements());
+
+        model.addAttribute("size", size);
         model.addAttribute("page", paymentPage.getTotalPages());
         model.addAttribute("sort", sort);
         model.addAttribute("order", order);
@@ -123,12 +129,10 @@ public class ClientController {
         try {
             cardService.updateCardWithMoney(number, money);
         } catch (BlockedCardException e) {
-            log.warn("CLIENT {} tried replenished BLOCKED card [number: {}] [money: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), number, money.trim());
+            log.warn("CLIENT {} tried replenished BLOCKED card [number: {}] [money: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), number, money.trim());
             return "redirect:/client/cards";
         } catch (InvalidMoneyAmountException e) {
-            log.warn("CLIENT {} tried replenished card with wrong money amount [number: {}] [money: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), number, money.trim());
+            log.warn("CLIENT {} tried replenished card with wrong money amount [number: {}] [money: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), number, money.trim());
             return "redirect:/client/card/" + number + "/top-up?error";
         }
         log.info("CLIENT {} replenished card [number: {}] [money: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), number, money.trim());
@@ -216,30 +220,21 @@ public class ClientController {
         try {
             if (action.equals("send")) {
                 paymentService.makePayment(paymentDto);
-                log.info("CLIENT {} made payment [number: {}] [number to: {}] [payment sum: {}]"
-                        , SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber()
-                        , paymentDto.getCardDestinationNumber()
-                        , paymentDto.getMoney());
+                log.info("CLIENT {} made payment [number: {}] [number to: {}] [payment sum: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber(), paymentDto.getCardDestinationNumber(), paymentDto.getMoney());
             } else {
                 paymentService.createPreparedPayment(paymentDto);
-                log.info("CLIENT {} prepared payment [number from: {}] [number to: {}] [payment sum: {}]"
-                        , SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber()
-                        , paymentDto.getCardDestinationNumber(), paymentDto.getMoney());
+                log.info("CLIENT {} prepared payment [number from: {}] [number to: {}] [payment sum: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber(), paymentDto.getCardDestinationNumber(), paymentDto.getMoney());
             }
         } catch (InvalidCardNumberException e) {
-            log.warn("CLIENT {} tried to make payment for card with wrong number [number: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber());
+            log.warn("CLIENT {} tried to make payment for card with wrong number [number: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber());
             model.addAttribute("invalidCardNumber", true);
             return "/client/payment";
         } catch (InvalidBalanceOnCardException e) {
-            log.warn("CLIENT {} tried to make payment with invalid balance [number: {}] [payment sum: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName()
-                    , paymentDto.getCardSenderNumber(), paymentDto.getMoney());
+            log.warn("CLIENT {} tried to make payment with invalid balance [number: {}] [payment sum: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardSenderNumber(), paymentDto.getMoney());
             model.addAttribute("invalidBalance", true);
             return "/client/payment";
         } catch (BlockedCardException e) {
-            log.warn("CLIENT {} tried to make payment for blocked card [number: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber());
+            log.warn("CLIENT {} tried to make payment for blocked card [number: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), paymentDto.getCardDestinationNumber());
             model.addAttribute("blockedCard", true);
             return "/client/payment";
         }

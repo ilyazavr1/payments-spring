@@ -31,6 +31,10 @@ public class UserService {
         return userRepository.getUsers();
     }
 
+    public User findUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
     public User blockUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {

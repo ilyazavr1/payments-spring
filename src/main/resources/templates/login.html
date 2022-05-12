@@ -18,8 +18,7 @@
                 <a th:href="@{/registration}" class="float-right btn btn-outline-primary" th:text="#{signUp}"></a>
                 <h4 class="card-title mb-4 mt-1" th:text="#{signIn}"></h4>
 
-<!--<h1 th:text="${session.size() }"></h1>
-<h1 th:if="${session != null}" th:text="${session.get('SPRING_SECURITY_LAST_EXCEPTION') != null }"></h1>-->
+
                 <div class="mb-3 text-center" th:if="${session != null && session.get('SPRING_SECURITY_LAST_EXCEPTION') != null }" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
 
                     <div style="color: red" th:if="${errorMsg.equals('Bad credentials')}" th:text="#{authenticationFailed}"></div>
@@ -40,12 +39,10 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" th:text="#{password}"></span>
                         </div>
-                        <input type="text" name="password" class="form-control"  id="password"
+                        <input type="password" name="password" class="form-control"  id="password"
                                maxlength="64">
                     </div>
-                   <!-- <div style="color: red" class="error-message" th:if="${#fields.hasErrors('password')}"
-                         th:text="exception">
-                    </div>-->
+
                     <button type="submit" class="btn btn-primary" th:text="#{login}"></button>
 
                 </form>

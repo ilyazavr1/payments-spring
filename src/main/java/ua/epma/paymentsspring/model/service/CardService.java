@@ -155,20 +155,15 @@ public class CardService {
 
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())) {
             card = cardRepository.findByNumber(number);
-
         } else card = getCardByCurrentUserByNumber(number);
-
         if (card == null || card.isBlocked()) return;
 
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-
         User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-
 
         if (!encoder.matches(password, user.getPassword())) throw new AuthenticationFailedException();
 
         card.setBlocked(true);
-
         cardRepository.save(card);
     }
 

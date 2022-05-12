@@ -17,8 +17,6 @@
         <div class="col">
             <label for="typeSort"  th:text="#{sortBy}"></label>
             <select name="sort" class="form-control" id="typeSort">
-
-
                 <option th:if="${param.sort == null}" value="name" th:text="#{name}"></option>
                 <option th:if="${param.sort == null}" value="number" th:text="#{number}"></option>
                 <option th:if="${param.sort == null}" value="money" th:text="#{money}"></option>
@@ -32,7 +30,6 @@
         <div class="col">
             <label for="orderSort"  th:text="#{sortingOrder}"></label>
             <select name="order" class="form-control" id="orderSort">
-
                 <option th:if="${param.order == null}" value="asc" th:text="#{ascending}"></option>
                 <option th:if="${param.order == null}" value="desc" th:text="#{descending}"></option>
 
@@ -40,6 +37,7 @@
                 <option th:selected="${param.order[0] == 'desc'}" th:unless="${param.order == null}" value="desc" th:text="#{descending}"></option>
             </select>
         </div>
+        <input th:if="${param.size != null}" type="hidden" name="size" th:value="${size}">
         <div class="col">
             <input class="btn btn-primary" type="submit"  th:value="#{sort}"/>
         </div>
@@ -123,22 +121,18 @@
 
     <ul class="pagination">
         <li class="page-item active" th:each="i : ${#numbers.sequence(0, (page - 1))}">
-
-            <!-- <input type="hidden" name="size" th:value="${param.size}" th:unless="${param.size == null}">-->
-
-            <a class="page-link" th:href="@{'/client/cards?page=' + ${i} + '&sort=' + ${sort} + '&order=' + ${order}}"  th:text="${i+1}"></a>
-
-           <!-- <a class="page-link" th:href="@{'/client/cards?page=' + ${page} + '&size=' + ${param.size}}" th:if="${param.size != null}" th:text="${i}"></a>-->
-
-            <!-- <button type="submit" class="page-link" th:text="${i}"> </button>-->
+            <a class="page-link" th:href="@{'/client/cards?page=' + ${i} + '&sort=' + ${sort} + '&order=' + ${order} + '&size=' + ${size}}"  th:text="${i+1}"></a>
         </li>
     </ul>
 </nav>
-<!--
-<form th:action="@{/client/cards}" method="get">
-    &lt;!&ndash;th:href="@{/client/cards?size=param.size&page=i}" &ndash;&gt;
-    <select name="size">
 
+<form th:action="@{/client/cards}" method="get">
+
+    <input type="hidden" name="page" th:value="0">
+    <input type="hidden" name="sort" th:value="${sort}">
+    <input type="hidden" name="order" th:value="${order}">
+
+    <select name="size">
 
         <option th:if="${param.size == null}" value="3">3</option>
         <option th:if="${param.size == null}" value="6">6</option>
@@ -151,9 +145,9 @@
     </select>
 
 
-    <h1 th:text="${param.size} "></h1>
+
 </form>
--->
+
 
 </body>
 </html>,

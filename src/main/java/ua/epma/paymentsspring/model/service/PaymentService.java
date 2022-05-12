@@ -16,8 +16,6 @@ import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 
 /**
@@ -40,12 +38,14 @@ public class PaymentService {
 
 
     public Page<Payment> getPaymentPagination(Pageable pageable){
-        return paymentRepository.findPaymentsByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),pageable);
+        return paymentRepository.findPaymentsByUserIdOrUserDestinationId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
+                userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
+                pageable);
     }
 
     /**
-     * Creates a card from which money is withdrawn from database.
-     * Creates a card that replenishes from database.
+     * Gets a card from which money is withdrawn from database.
+     * Gets a card that replenishes from database.
      * Calls the method that transfers money.
      * Creates new Payment and saves to database.
      * @param paymentDto PaymentDto object that contains validated information for creating Payment.
@@ -66,7 +66,7 @@ public class PaymentService {
     }
 
     /**
-     * Create prepared Payment from database.
+     * Gets prepared Payment from database.
      * Calls the method that transfers money.
      * Updates Payment and confirmed it.
      * @param id Payment id
@@ -77,7 +77,7 @@ public class PaymentService {
     public void confirmPayment(Long id) throws InvalidBalanceOnCardException, InvalidCardNumberException, BlockedCardException {
         Payment payment = paymentRepository.getPaymentById(id);
         if (cardService.transferMoney(payment.getCardSenderId(), payment.getCardDestinationId(), payment.getMoney())) {
-            payment.setBalance(payment.getBalance() - payment.getMoney());
+            payment.setBalance(payment.getCardSenderId().getMoney() + payment.getMoney());
             payment.setSend(true);
             payment.setCreationTimestamp(LocalDateTime.now());
             paymentRepository.save(payment);
@@ -85,8 +85,8 @@ public class PaymentService {
     }
 
     /**
-     * Creates a card from which money is withdrawn from database.
-     * Creates a card that replenishes from database.
+     * Gets a card from which money is withdrawn from database.
+     * Gets a card that replenishes from database.
      * Validates transfer data.
      * Create prepared Payment and saves it to database.
      *
@@ -119,6 +119,7 @@ public class PaymentService {
                 .isSend(iSend)
                 .creationTimestamp(LocalDateTime.now())
                 .userId(cardFrom.getUserId())
+                .userDestinationId(cardTo.getUserId())
                 .cardSenderId(cardFrom)
                 .cardDestinationId(cardTo)
                 .build();
