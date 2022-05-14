@@ -19,6 +19,7 @@ import ua.epma.paymentsspring.model.entity.User;
 import ua.epma.paymentsspring.model.excwption.*;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
+import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
 
@@ -32,6 +33,7 @@ public class CardService {
 
     private CardRepository cardRepository;
     private UserRepository userRepository;
+    private PaymentRepository paymentRepository;
     private CardUnblockRequestRepository cardUnblockRequestRepository;
 
 
@@ -87,6 +89,7 @@ public class CardService {
 
         cardRepository.save(card);
 
+        paymentRepository.updatePreparedPayments(card.getId(), card.getMoney());
     }
 
     /**

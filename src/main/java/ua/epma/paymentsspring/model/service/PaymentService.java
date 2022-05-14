@@ -65,8 +65,10 @@ public class PaymentService {
 
             paymentRepository.save(payment);
 
-            updatePreparedPayments(payment);
+            //updatePreparedPayments(payment);
 
+            paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(), payment.getCardSenderId().getMoney(),
+                    payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
         }
     }
 
@@ -76,7 +78,7 @@ public class PaymentService {
 
         Map<Long, Card> longCardMapFrom = cardRepository.findByUserId(payment.getUserId()).stream().collect(Collectors.toMap(Card::getId, Function.identity()));
         Map<Long, Card> longCardMapTo = cardRepository.findByUserId(payment.getUserDestinationId()).stream().collect(Collectors.toMap(Card::getId, Function.identity()));
-        //if (longCardMapFrom.isEmpty()) return false;
+
 
 
         paymentList.forEach(p -> {
@@ -85,14 +87,8 @@ public class PaymentService {
         });
 
         paymentRepository.saveAll(paymentList);
-        //return paymentDao.updatePreparedPaymentMoney(paymentList);
     }
-    /*private void updatePreparedPayments(Payment payment){
 
-
-        paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(),payment.getCardSenderId().getMoney(),
-                payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
-    }*/
 
     /**
      * Gets prepared Payment from database.
@@ -114,7 +110,9 @@ public class PaymentService {
             payment.setCreationTimestamp(LocalDateTime.now());
             paymentRepository.save(payment);
 
-            updatePreparedPayments(payment);
+           // updatePreparedPayments(payment);
+            paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(), payment.getCardSenderId().getMoney(),
+                    payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
         }
     }
 
