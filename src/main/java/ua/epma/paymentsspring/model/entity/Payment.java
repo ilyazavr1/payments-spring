@@ -24,6 +24,9 @@ public class Payment {
     @Column(name = "balance")
     private int balance;
 
+    @Column(name = "balance_destination")
+    private int balanceDestination;
+
     @Column(name = "money")
     private int money;
 

@@ -3,9 +3,11 @@ package ua.epma.paymentsspring.model.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ua.epma.paymentsspring.model.entity.Card;
+import ua.epma.paymentsspring.model.entity.Payment;
 import ua.epma.paymentsspring.model.entity.User;
 
 import java.util.List;
@@ -22,10 +24,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     List<Card> findByUserId(User user);
 
-
-
     @Query("SELECT c FROM Card c where c.userId.id = :id")
-    List<Card> findByUserId(@Param(value="id") Long id);
+    List<Card> findByUserId(@Param(value = "id") Long id);
 
 
 

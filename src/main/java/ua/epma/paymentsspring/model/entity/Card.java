@@ -4,6 +4,7 @@ package ua.epma.paymentsspring.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -37,6 +38,12 @@ public class Card {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User userId;
+
+    /*@OneToMany(mappedBy = "cardSenderId", fetch = FetchType.EAGER)
+    private Set<Payment> paymentsCardSender;
+
+    @OneToMany(mappedBy = "cardDestinationId", fetch = FetchType.EAGER)
+    private Set<Payment> paymentsCardDestination;*/
 
 
 }

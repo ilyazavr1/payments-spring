@@ -32,10 +32,6 @@ public class PaymentService {
     private UserRepository userRepository;
 
 
-    public Payment getPaymentById(Long id) {
-        return paymentRepository.getPaymentById(id);
-    }
-
 
     public Page<Payment> getPaymentPagination(Pageable pageable){
         return paymentRepository.findPaymentsByUserIdOrUserDestinationId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
@@ -59,9 +55,13 @@ public class PaymentService {
 
         if (cardService.transferMoney(cardFrom, cardTo, paymentDto.getMoney())) {
             Payment payment = createPaymentWithStatus(paymentDto, cardFrom, cardTo, true);
-            payment.setBalance(cardFrom.getMoney() + payment.getMoney());
+            payment.setBalance(cardFrom.getMoney());
+            payment.setBalanceDestination(cardTo.getMoney());
 
             paymentRepository.save(payment);
+
+            paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(),payment.getCardSenderId().getMoney(),
+                    payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
         }
     }
 
@@ -77,10 +77,14 @@ public class PaymentService {
     public void confirmPayment(Long id) throws InvalidBalanceOnCardException, InvalidCardNumberException, BlockedCardException {
         Payment payment = paymentRepository.getPaymentById(id);
         if (cardService.transferMoney(payment.getCardSenderId(), payment.getCardDestinationId(), payment.getMoney())) {
-            payment.setBalance(payment.getCardSenderId().getMoney() + payment.getMoney());
+            payment.setBalance(payment.getCardSenderId().getMoney());
+            payment.setBalanceDestination(payment.getCardDestinationId().getMoney());
+            System.out.println(payment.getCardSenderId().getMoney() +  "  " + payment.getCardDestinationId().getMoney());
             payment.setSend(true);
             payment.setCreationTimestamp(LocalDateTime.now());
             paymentRepository.save(payment);
+            paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(),payment.getCardSenderId().getMoney(),
+                    payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
         }
     }
 
@@ -115,6 +119,7 @@ public class PaymentService {
     private Payment createPaymentWithStatus(PaymentDto paymentDto, Card cardFrom, Card cardTo, boolean iSend) {
         return Payment.builder()
                 .balance(cardFrom.getMoney())
+                .balanceDestination(cardTo.getMoney())
                 .money(paymentDto.getMoney())
                 .isSend(iSend)
                 .creationTimestamp(LocalDateTime.now())
@@ -126,11 +131,5 @@ public class PaymentService {
 
     }
 
-  /*  public void updatePreparedPayments(){
-        paymentRepository.getPaymentByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
-    }
 
-    public List<Payment> getPaymentsByCurrentUser() {
-        return paymentRepository.getPaymentByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
-    }*/
 }

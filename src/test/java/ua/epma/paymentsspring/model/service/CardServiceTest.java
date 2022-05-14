@@ -86,7 +86,7 @@ class CardServiceTest {
 
 
     @Test
-    void updateCardWithMoneyThrowsRuntimeException() {
+    void updateCardWithMoneyThrowsRuntimeException() throws BlockedCardException, InvalidMoneyAmountException {
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -95,8 +95,9 @@ class CardServiceTest {
 
         when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
         when(cardRepository.findByNumberAndUserId(CARD_NUMBER_1, REGISTERED_USER)).thenReturn(null);
+        cardService.updateCardWithMoney(CARD_NUMBER_1, MONEY100);
 
-        assertThrows(RuntimeException.class, () -> cardService.updateCardWithMoney(CARD_NUMBER_1, MONEY100));
+        verify(cardRepository, times(0)).save(null);
     }
 
     @Test

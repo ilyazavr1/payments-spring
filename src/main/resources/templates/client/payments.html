@@ -71,23 +71,31 @@
                 <td th:text="${payment.id}"></td>
                 <td th:text="${payment.userId.firstName + ' ' + payment.userId.lastName+ ' ' + payment.userId.surname}"></td>
                 <td th:text="${payment.cardSenderId.number}"></td>
-                <td>
-                    <span th:if="${payment.send == true}" th:text="${payment.balance}"></span>
-                    <span th:if="${payment.send == false}" th:text="${payment.cardSenderId.money}"></span>
+
+                <td th:if="${session.user.id == payment.userId.id}">
+                    <span th:if="${payment.send == true}" th:text="${payment.balance + payment.money}"></span>
+                    <span th:if="${payment.send == false}" th:text="${payment.balance}"></span>
+                </td>
+                <td th:if="${session.user.id != payment.userId.id}">
+                    <span th:if="${payment.send == true}" th:text="${payment.balanceDestination - payment.money}"></span>
+                    <span th:if="${payment.send == false}" th:text="${payment.balanceDestination}"></span>
                 </td>
                 <td th:text="${payment.money}"></td>
-                <!--<td th:text="${payment.balance - payment.money}"></td>-->
-                <td>
-                    <span th:if="${payment.send == false}" th:text="${payment.cardSenderId.money - payment.money}"></span>
-                    <span th:if="${payment.send == true}" th:text="${payment.balance - payment.money}"></span>
+
+                <td th:if="${session.user.id == payment.userId.id}">
+                    <span th:if="${payment.send == true}" th:text="${payment.balance}"></span>
+                    <span th:if="${payment.send == false}" th:text="${payment.balance - payment.money}"></span>
+                </td>
+                <td th:if="${session.user.id != payment.userId.id}">
+                    <span th:if="${payment.send == true}" th:text="${payment.balanceDestination}"></span>
+                    <span th:if="${payment.send == false}" th:text="${payment.cardDestinationId.money + payment.money}"></span>
                 </td>
                 <td th:text="${payment.userDestinationId.firstName + ' ' + payment.userDestinationId.lastName+ ' ' + payment.userDestinationId.surname}"></td>
-               <!-- <td th:text="${payment.cardDestinationId.userId.firstName}"></td>-->
                 <td style="width: 2000px" th:text="${payment.cardDestinationId.number}"></td>
                 <td th:text="${#temporals.format(payment.creationTimestamp, 'dd-MM-yyyy HH:mm')}"></td>
                 <td class="badge badge-primary" th:text="${payment.send} ? #{statusSent} :#{statusPrepared}"></td>
 
-                <form th:if="${payment.send == false && payment.cardSenderId.userId.id == session.user.id}" th:action="@{/client/card/payment}" method="post">
+                <form th:if="${payment.send == false && payment.cardSenderId.userId.id == session.user.id}" th:action="@{/client/card/payment/confirm}" method="post">
                     <input type="hidden" name="paymentId" th:value="${payment.id}">
 
                     <td>

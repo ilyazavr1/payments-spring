@@ -194,7 +194,7 @@ public class CardService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public boolean transferMoney(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, BlockedCardException, InvalidBalanceOnCardException {
+    public boolean  transferMoney(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, BlockedCardException, InvalidBalanceOnCardException {
 
         if (!validateTransfer(cardFrom, cardTo, money)) return false;
 

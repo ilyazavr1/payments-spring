@@ -73,7 +73,7 @@ public class ClientController {
                                  @RequestParam(defaultValue = "id") String sort,
                                  @RequestParam(defaultValue = "desc") String order,
                                  @RequestParam(defaultValue = "9") String size,
-                                 Model model, HttpSession session) throws InvalidCardNumberException {
+                                 Model model)  {
 
 
         Pageable pageable;
@@ -242,7 +242,7 @@ public class ClientController {
         return "redirect:/client/cards";
     }
 
-    @PostMapping(value = "/card/payment", params = "action=confirm")
+    @PostMapping(value = "/card/payment/confirm", params = "action=confirm")
     public String postPaymentConfirm(@RequestParam("paymentId") String paymentId, RedirectAttributes redirectAttributes) {
         try {
             paymentService.confirmPayment(Long.valueOf(paymentId));
