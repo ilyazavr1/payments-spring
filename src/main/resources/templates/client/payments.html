@@ -88,7 +88,7 @@
                 </td>
                 <td th:if="${session.user.id != payment.userId.id}">
                     <span th:if="${payment.send == true}" th:text="${payment.balanceDestination}"></span>
-                    <span th:if="${payment.send == false}" th:text="${payment.cardDestinationId.money + payment.money}"></span>
+                    <span th:if="${payment.send == false}" th:text="${payment.balanceDestination + payment.money}"></span>
                 </td>
                 <td th:text="${payment.userDestinationId.firstName + ' ' + payment.userDestinationId.lastName+ ' ' + payment.userDestinationId.surname}"></td>
                 <td style="width: 2000px" th:text="${payment.cardDestinationId.number}"></td>

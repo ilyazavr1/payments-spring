@@ -16,10 +16,15 @@ import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
  * Service for business logic related with Payment.
+ *
  * @author Illia
  */
 @AllArgsConstructor
@@ -32,8 +37,7 @@ public class PaymentService {
     private UserRepository userRepository;
 
 
-
-    public Page<Payment> getPaymentPagination(Pageable pageable){
+    public Page<Payment> getPaymentPagination(Pageable pageable) {
         return paymentRepository.findPaymentsByUserIdOrUserDestinationId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
                 userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
                 pageable);
@@ -44,10 +48,11 @@ public class PaymentService {
      * Gets a card that replenishes from database.
      * Calls the method that transfers money.
      * Creates new Payment and saves to database.
+     *
      * @param paymentDto PaymentDto object that contains validated information for creating Payment.
-     * @throws InvalidCardNumberException if card number does not exist in the database
+     * @throws InvalidCardNumberException    if card number does not exist in the database
      * @throws InvalidBalanceOnCardException if the difference between card balance and payment money is negative
-     * @throws BlockedCardException if the card is blocked
+     * @throws BlockedCardException          if the card is blocked
      */
     public void makePayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
         Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
@@ -60,31 +65,56 @@ public class PaymentService {
 
             paymentRepository.save(payment);
 
-            paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(),payment.getCardSenderId().getMoney(),
-                    payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
+            updatePreparedPayments(payment);
+
         }
     }
+
+    public void updatePreparedPayments(Payment payment) {
+        List<Payment> paymentList = paymentRepository.getPaymentsByUserIdAndIsSendFalse(payment.getUserId());
+        if (paymentList.isEmpty()) return;
+
+        Map<Long, Card> longCardMapFrom = cardRepository.findByUserId(payment.getUserId()).stream().collect(Collectors.toMap(Card::getId, Function.identity()));
+        Map<Long, Card> longCardMapTo = cardRepository.findByUserId(payment.getUserDestinationId()).stream().collect(Collectors.toMap(Card::getId, Function.identity()));
+        //if (longCardMapFrom.isEmpty()) return false;
+
+
+        paymentList.forEach(p -> {
+            p.setBalance(longCardMapFrom.get(p.getCardSenderId().getId()).getMoney());
+            p.setBalanceDestination(longCardMapTo.get(p.getCardDestinationId().getId()).getMoney());
+        });
+
+        paymentRepository.saveAll(paymentList);
+        //return paymentDao.updatePreparedPaymentMoney(paymentList);
+    }
+    /*private void updatePreparedPayments(Payment payment){
+
+
+        paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(),payment.getCardSenderId().getMoney(),
+                payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
+    }*/
 
     /**
      * Gets prepared Payment from database.
      * Calls the method that transfers money.
      * Updates Payment and confirmed it.
+     *
      * @param id Payment id
      * @throws InvalidBalanceOnCardException if the difference between card balance and payment money is negative
-     * @throws InvalidCardNumberException if card number does not exist in the database
-     * @throws BlockedCardException if the card is blocked
+     * @throws InvalidCardNumberException    if card number does not exist in the database
+     * @throws BlockedCardException          if the card is blocked
      */
     public void confirmPayment(Long id) throws InvalidBalanceOnCardException, InvalidCardNumberException, BlockedCardException {
         Payment payment = paymentRepository.getPaymentById(id);
         if (cardService.transferMoney(payment.getCardSenderId(), payment.getCardDestinationId(), payment.getMoney())) {
             payment.setBalance(payment.getCardSenderId().getMoney());
             payment.setBalanceDestination(payment.getCardDestinationId().getMoney());
-            System.out.println(payment.getCardSenderId().getMoney() +  "  " + payment.getCardDestinationId().getMoney());
+
             payment.setSend(true);
             payment.setCreationTimestamp(LocalDateTime.now());
             paymentRepository.save(payment);
-            paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(),payment.getCardSenderId().getMoney(),
-                    payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
+
+            updatePreparedPayments(payment);
         }
     }
 
@@ -95,9 +125,9 @@ public class PaymentService {
      * Create prepared Payment and saves it to database.
      *
      * @param paymentDto PaymentDto object that contains validated information for creating Payment.
-     * @throws InvalidCardNumberException if card number does not exist in the database
+     * @throws InvalidCardNumberException    if card number does not exist in the database
      * @throws InvalidBalanceOnCardException if the difference between card balance and payment money is negative
-     * @throws BlockedCardException if the card is blocked
+     * @throws BlockedCardException          if the card is blocked
      */
     public void createPreparedPayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
         Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
@@ -111,9 +141,9 @@ public class PaymentService {
 
     /**
      * @param paymentDto PaymentDto object that contains validated information for creating Payment.
-     * @param cardFrom Card for creating Payment.
-     * @param cardTo Card for creating Payment.
-     * @param iSend if false, creates prepared payment, if true, creates sent payment
+     * @param cardFrom   Card for creating Payment.
+     * @param cardTo     Card for creating Payment.
+     * @param iSend      if false, creates prepared payment, if true, creates sent payment
      * @return new Payment
      */
     private Payment createPaymentWithStatus(PaymentDto paymentDto, Card cardFrom, Card cardTo, boolean iSend) {
