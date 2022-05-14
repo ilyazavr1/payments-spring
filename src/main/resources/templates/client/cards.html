@@ -10,144 +10,163 @@
 <div th:insert="fragments/navBar :: 'header'"></div>
 
 
-<form th:action="@{/client/cards}" method="get">
-    <input th:if="${param.page != null}" type="hidden" name="page" th:value="${param.page[0]}">
 
-    <div style="width: 30%" class="row">
-        <div class="col">
-            <label for="typeSort"  th:text="#{sortBy}"></label>
-            <select name="sort" class="form-control" id="typeSort">
-                <option th:if="${param.sort == null}" value="name" th:text="#{name}"></option>
-                <option th:if="${param.sort == null}" value="number" th:text="#{number}"></option>
-                <option th:if="${param.sort == null}" value="money" th:text="#{money}"></option>
+<div th:if="${!cardList.isEmpty()}">
+
+    <form th:action="@{/client/cards}" method="get">
+        <input th:if="${param.page != null}" type="hidden" name="page" th:value="${param.page[0]}">
+
+        <div style="width: 30%" class="row">
+            <div class="col">
+                <label for="typeSort" th:text="#{sortBy}"></label>
+                <select name="sort" class="form-control" id="typeSort">
+                    <option th:if="${param.sort == null}" value="name" th:text="#{name}"></option>
+                    <option th:if="${param.sort == null}" value="number" th:text="#{number}"></option>
+                    <option th:if="${param.sort == null}" value="money" th:text="#{money}"></option>
 
 
-                <option th:selected="${param.sort[0] == 'name'}" th:unless="${param.sort == null}" value="name" th:text="#{name}">name</option>
-                <option th:selected="${param.sort[0] == 'number'}" th:unless="${param.sort == null}" value="number" th:text="#{number}">number</option>
-                <option th:selected="${param.sort[0] == 'money'}" th:unless="${param.sort == null}" value="money" th:text="#{money}">money</option>
-            </select>
+                    <option th:selected="${param.sort[0] == 'name'}" th:unless="${param.sort == null}" value="name"
+                            th:text="#{name}">name
+                    </option>
+                    <option th:selected="${param.sort[0] == 'number'}" th:unless="${param.sort == null}" value="number"
+                            th:text="#{number}">number
+                    </option>
+                    <option th:selected="${param.sort[0] == 'money'}" th:unless="${param.sort == null}" value="money"
+                            th:text="#{money}">money
+                    </option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="orderSort" th:text="#{sortingOrder}"></label>
+                <select name="order" class="form-control" id="orderSort">
+                    <option th:if="${param.order == null}" value="asc" th:text="#{ascending}"></option>
+                    <option th:if="${param.order == null}" value="desc" th:text="#{descending}"></option>
+
+                    <option th:selected="${param.order[0] == 'asc'}" th:unless="${param.order == null}" value="asc"
+                            th:text="#{ascending}"></option>
+                    <option th:selected="${param.order[0] == 'desc'}" th:unless="${param.order == null}" value="desc"
+                            th:text="#{descending}"></option>
+                </select>
+            </div>
+            <input th:if="${param.size != null}" type="hidden" name="size" th:value="${size}">
+            <div class="col">
+                <input class="btn btn-primary" type="submit" th:value="#{sort}"/>
+            </div>
         </div>
-        <div class="col">
-            <label for="orderSort"  th:text="#{sortingOrder}"></label>
-            <select name="order" class="form-control" id="orderSort">
-                <option th:if="${param.order == null}" value="asc" th:text="#{ascending}"></option>
-                <option th:if="${param.order == null}" value="desc" th:text="#{descending}"></option>
+    </form>
 
-                <option th:selected="${param.order[0] == 'asc'}" th:unless="${param.order == null}" value="asc" th:text="#{ascending}"></option>
-                <option th:selected="${param.order[0] == 'desc'}" th:unless="${param.order == null}" value="desc" th:text="#{descending}"></option>
-            </select>
-        </div>
-        <input th:if="${param.size != null}" type="hidden" name="size" th:value="${size}">
-        <div class="col">
-            <input class="btn btn-primary" type="submit"  th:value="#{sort}"/>
+
+    <div class="container">
+        <div class="row">
+            <div th:each="card : ${cardList}" class="col-sm-4 py-2">
+                <div th:if="${card.blocked == false}" class="card h-100 border-primary">
+
+                    <div class="card-body">
+                        <h3 class="card-title" th:text="${card.number}"></h3>
+                        <h3 class="card-title" th:text="${card.name}"> ></h3>
+                        <p class="card-text" th:text="${card.money}">></p>
+
+                        <p class="card-text" th:text="#{active}">></p>
+
+
+                        <div>
+
+                            <form style="float: left; width: 40%"
+                                  th:action="@{/client/card/{number}/top-up(number=${card.number})}" method="get"
+                                  th:object="${card}">
+
+                                <input style="background-color: lightgreen" type="submit"
+                                       class="btn btn-outline-secondary"
+                                       th:value="#{topUp}">
+                            </form>
+
+                            <form style="float: right; width: 60%"
+                                  th:action="@{/client/card/{number}/block(number=${card.number})}" method="get">
+                                <input style="margin-left: 70px; background-color: lightcoral" type="submit"
+                                       class="btn btn-outline-secondary" th:value="#{block}">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${(card.blocked == true) && (card.underConsideration == false)}"
+                     style="background-color: lightcoral" class="card h-100 border-primary">
+
+                    <div class="card-body">
+                        <h3 class="card-title" th:text="${card.number}"></h3>
+                        <h3 class="card-title" th:text="${card.name}"> ></h3>
+                        <p class="card-text" th:text="${card.money}">></p>
+                        <p class="card-text" th:text="#{blocked}">></p>
+                        <div>
+
+                            <form style="float: right; width: 60%" th:action="@{/client/card/unblock-request}"
+                                  method="post">
+                                <input type="hidden" name="cardNumber" th:value="${card.number}">
+                                <input style="margin-left: 70px; background-color: lightcoral" type="submit"
+                                       class="btn btn-outline-secondary" th:value="#{unblock}">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${(card.blocked == true) && (card.underConsideration == true)}"
+                     style="background-color: darkgray" class="card h-100 border-primary">
+
+                    <div class="card-body">
+                        <h3 class="card-title" th:text="${card.number}"></h3>
+                        <h3 class="card-title" th:text="${card.name}"> ></h3>
+                        <p class="card-text" th:text="${card.money}">></p>
+
+                        <div>
+
+                            <td class="badge badge-primary" th:text="#{underConsideration}"></td>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</form>
+
+    <nav style="padding-left: 10px" staria-label="Page navigation example">
+
+        <ul class="pagination">
+            <li class="page-item active" th:each="i : ${#numbers.sequence(0, (page - 1))}">
+                <a class="page-link"
+                   th:href="@{'/client/cards?page=' + ${i} + '&sort=' + ${sort} + '&order=' + ${order} + '&size=' + ${size}}"
+                   th:text="${i+1}"></a>
+            </li>
+        </ul>
+    </nav>
+
+    <form th:action="@{/client/cards}" method="get">
+
+        <input type="hidden" name="page" th:value="0">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="order" th:value="${order}">
+
+        <select name="size">
+
+            <option th:if="${param.size == null}" value="3">3</option>
+            <option th:if="${param.size == null}" value="6">6</option>
+            <option selected th:if="${param.size == null}" value="9">9</option>
+            <option th:selected="${param.size[0] == '3'}" th:unless="${param.size == null}" value="3">3</option>
+            <option th:selected="${param.size[0] == '6'}" th:unless="${param.size == null}" value="6">6</option>
+            <option th:selected="${param.size[0] == '9'}" th:unless="${param.size == null}" value="9">9</option>
+
+            <input type="submit" value="go">
+        </select>
+    </form>
 </div>
 
 
-<div class="container">
-    <div class="row">
-        <div th:each="card : ${cardList}" class="col-sm-4 py-2">
-            <div th:if="${card.blocked == false}" class="card h-100 border-primary">
+<div th:if="${cardList.isEmpty()}">
 
-                <div class="card-body">
-                    <h3 class="card-title" th:text="${card.number}"></h3>
-                    <h3 class="card-title" th:text="${card.name}"> ></h3>
-                    <p class="card-text" th:text="${card.money}">></p>
-
-                    <p class="card-text" th:text="#{active}">></p>
-
-
-                    <div>
-
-                        <form style="float: left; width: 40%"
-                              th:action="@{/client/card/{number}/top-up(number=${card.number})}" method="get"
-                              th:object="${card}">
-
-                            <input style="background-color: lightgreen" type="submit" class="btn btn-outline-secondary"
-                                   th:value="#{topUp}">
-                        </form>
-
-                        <form style="float: right; width: 60%"
-                              th:action="@{/client/card/{number}/block(number=${card.number})}" method="get">
-                            <input style="margin-left: 70px; background-color: lightcoral" type="submit"
-                                   class="btn btn-outline-secondary" th:value="#{block}">
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div th:if="${(card.blocked == true) && (card.underConsideration == false)}"
-                 style="background-color: lightcoral" class="card h-100 border-primary">
-
-                <div class="card-body">
-                    <h3 class="card-title" th:text="${card.number}"></h3>
-                    <h3 class="card-title" th:text="${card.name}"> ></h3>
-                    <p class="card-text" th:text="${card.money}">></p>
-                    <p class="card-text"  th:text="#{blocked}">></p>
-                    <div>
-
-                        <form style="float: right; width: 60%" th:action="@{/client/card/unblock-request}"
-                              method="post">
-                            <input type="hidden" name="cardNumber" th:value="${card.number}">
-                            <input style="margin-left: 70px; background-color: lightcoral" type="submit"
-                                   class="btn btn-outline-secondary" th:value="#{unblock}" >
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div th:if="${(card.blocked == true) && (card.underConsideration == true)}"
-                 style="background-color: darkgray" class="card h-100 border-primary">
-
-                <div class="card-body">
-                    <h3 class="card-title" th:text="${card.number}"></h3>
-                    <h3 class="card-title" th:text="${card.name}"> ></h3>
-                    <p class="card-text" th:text="${card.money}">></p>
-
-                    <div>
-
-                        <td class="badge badge-primary" th:text="#{underConsideration}"></td>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1 style="text-align:center" th:text="#{youHaveNoCards}"> </h1>
+    <h1><a style="text-align:center" class="nav-link" th:href="@{/client/card/create}" th:text="#{navBar.makeCard}"></a></h1>
+    <img style="width: 900px; height: 888.042px; display: block;margin-left: auto; margin-right: auto; margin-top: 150px"
+         src="../img/cardLogo.png" th:src="@{~/img/cardLogo.png}"/>
 
 </div>
-
-<nav style="padding-left: 10px" staria-label="Page navigation example">
-
-    <ul class="pagination">
-        <li class="page-item active" th:each="i : ${#numbers.sequence(0, (page - 1))}">
-            <a class="page-link" th:href="@{'/client/cards?page=' + ${i} + '&sort=' + ${sort} + '&order=' + ${order} + '&size=' + ${size}}"  th:text="${i+1}"></a>
-        </li>
-    </ul>
-</nav>
-
-<form th:action="@{/client/cards}" method="get">
-
-    <input type="hidden" name="page" th:value="0">
-    <input type="hidden" name="sort" th:value="${sort}">
-    <input type="hidden" name="order" th:value="${order}">
-
-    <select name="size">
-
-        <option th:if="${param.size == null}" value="3">3</option>
-        <option th:if="${param.size == null}" value="6">6</option>
-        <option selected th:if="${param.size == null}" value="9">9</option>
-        <option th:selected="${param.size[0] == '3'}" th:unless="${param.size == null}" value="3">3</option>
-        <option th:selected="${param.size[0] == '6'}" th:unless="${param.size == null}" value="6">6</option>
-        <option th:selected="${param.size[0] == '9'}" th:unless="${param.size == null}" value="9">9</option>
-
-        <input type="submit" value="go">
-    </select>
-
-
-
-</form>
-
 
 </body>
 </html>,

@@ -65,14 +65,14 @@ public class PaymentService {
 
             paymentRepository.save(payment);
 
-            //updatePreparedPayments(payment);
+
 
             paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(), payment.getCardSenderId().getMoney(),
                     payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
         }
     }
 
-    public void updatePreparedPayments(Payment payment) {
+    /*public void updatePreparedPayments(Payment payment) {
         List<Payment> paymentList = paymentRepository.getPaymentsByUserIdAndIsSendFalse(payment.getUserId());
         if (paymentList.isEmpty()) return;
 
@@ -87,7 +87,7 @@ public class PaymentService {
         });
 
         paymentRepository.saveAll(paymentList);
-    }
+    }*/
 
 
     /**
@@ -110,7 +110,7 @@ public class PaymentService {
             payment.setCreationTimestamp(LocalDateTime.now());
             paymentRepository.save(payment);
 
-           // updatePreparedPayments(payment);
+
             paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(), payment.getCardSenderId().getMoney(),
                     payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
         }

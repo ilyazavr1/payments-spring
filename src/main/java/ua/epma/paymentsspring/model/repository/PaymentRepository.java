@@ -29,7 +29,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                                          @Param("destCardId") Long destCardId, @Param("destBalance") int destBalance);
 
 
-    List<Payment> getPaymentsByUserIdAndIsSendFalse(User user);
 
     @Transactional
     @Modifying
