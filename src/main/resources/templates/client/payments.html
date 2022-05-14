@@ -102,7 +102,10 @@
                     <td th:text="${payment.userDestinationId.firstName + ' ' + payment.userDestinationId.lastName+ ' ' + payment.userDestinationId.surname}"></td>
                     <td style="width: 2000px" th:text="${payment.cardDestinationId.number}"></td>
                     <td th:text="${#temporals.format(payment.creationTimestamp, 'dd-MM-yyyy HH:mm')}"></td>
-                    <td class="badge badge-primary" th:text="${payment.send} ? #{statusSent} :#{statusPrepared}"></td>
+
+                    <td class="badge badge-success" th:if="${payment.send}" th:text="#{statusSent}"></td>
+                    <td class="badge badge-warning" th:if="${!payment.send}" th:text="#{statusPrepared}"></td>
+
 
                     <form th:if="${payment.send == false && payment.cardSenderId.userId.id == session.user.id}"
                           th:action="@{/client/card/payment/confirm}" method="post">
@@ -163,7 +166,8 @@
 <div th:if="${paymentList.isEmpty()}">
 
     <h1 style="text-align:center" th:text="#{youHaveNoPayments}"></h1>
-    <h1><a style="text-align:center" class="nav-link" th:href="@{/client/card/payment}" th:text="#{navBar.makePayment}"></a>
+    <h1><a style="text-align:center" class="nav-link" th:href="@{/client/card/payment}"
+           th:text="#{navBar.makePayment}"></a>
     </h1>
     <img style="width: 900px; height: 888.042px; display: block;margin-left: auto; margin-right: auto; margin-top: 150px"
          src="../img/cardLogo.png" th:src="@{~/img/cardLogo.png}"/>

@@ -30,8 +30,8 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/client/payments}" th:text="#{navBar.myPayments}"></a>
                 </li>
-                <li>
-                    <span style="color: darkgray" th:text ="${#authentication.getPrincipal().getUsername()}"></span>
+                <li style="margin-left: 100px">
+                    <span style="color: white; font-size: 23px" th:text ="${#authentication.getPrincipal().getUsername()}"></span>
                 </li>
             </ul>
 
@@ -66,6 +66,9 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/admin/cards/unblock-request}"
                        th:text="#{navBar.cardsUnblockRequest}"></a>
+                </li>
+                <li style="margin-left: 100px">
+                    <span style="color: white; font-size: 23px" th:text ="${#authentication.getPrincipal().getUsername()}"></span>
                 </li>
             </ul>
 
