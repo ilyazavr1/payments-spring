@@ -194,7 +194,7 @@ public class ClientController {
     }
 
     @PostMapping("/card/unblock-request")
-    private String postMakeRequest(@RequestParam("cardNumber") String cardNumber) {
+    public String postMakeRequest(@RequestParam("cardNumber") String cardNumber) {
         try {
             cardService.makeCardUnblockRequest(cardNumber);
         } catch (InvalidCardNumberException e) {
