@@ -1,10 +1,14 @@
 package ua.epma.paymentsspring.model.service;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.service.NullServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
@@ -51,6 +55,7 @@ public class PaymentService {
      * @throws InvalidBalanceOnCardException if the difference between card balance and payment money is negative
      * @throws BlockedCardException          if the card is blocked
      */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void makePayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
         Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
         Card cardTo = cardRepository.findByNumber(paymentDto.getCardDestinationNumber());
@@ -61,8 +66,6 @@ public class PaymentService {
             payment.setBalanceDestination(cardTo.getMoney());
 
             paymentRepository.save(payment);
-
-
 
             paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(), payment.getCardSenderId().getMoney(),
                     payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());
@@ -97,16 +100,17 @@ public class PaymentService {
      * @throws InvalidCardNumberException    if card number does not exist in the database
      * @throws BlockedCardException          if the card is blocked
      */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void confirmPayment(Long id) throws InvalidBalanceOnCardException, InvalidCardNumberException, BlockedCardException {
         Payment payment = paymentRepository.getPaymentById(id);
+
         if (cardService.transferMoney(payment.getCardSenderId(), payment.getCardDestinationId(), payment.getMoney())) {
             payment.setBalance(payment.getCardSenderId().getMoney());
             payment.setBalanceDestination(payment.getCardDestinationId().getMoney());
-
             payment.setSend(true);
             payment.setCreationTimestamp(LocalDateTime.now());
-            paymentRepository.save(payment);
 
+            paymentRepository.save(payment);
 
             paymentRepository.updatePreparedPaymentsByCardIds(payment.getCardSenderId().getId(), payment.getCardSenderId().getMoney(),
                     payment.getCardDestinationId().getId(), payment.getCardDestinationId().getMoney());

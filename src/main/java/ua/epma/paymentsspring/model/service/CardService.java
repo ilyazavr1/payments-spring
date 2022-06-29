@@ -63,9 +63,7 @@ public class CardService {
     }
 
     public List<CardUnblockRequest> getCardUnblockRequest() {
-        List<CardUnblockRequest> list = cardUnblockRequestRepository.findAllByOrderByIdDesc();
-
-        return cardUnblockRequestRepository.findAllByOrderByIdDesc();
+               return cardUnblockRequestRepository.findAllByOrderByIdDesc();
     }
 
 
@@ -76,6 +74,7 @@ public class CardService {
      * @throws BlockedCardException if Card is blocked
      * @throws InvalidMoneyAmountException if wrong card number
      */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void updateCardWithMoney(String number, String money) throws BlockedCardException, InvalidMoneyAmountException {
         Card card;
         try {
@@ -186,6 +185,7 @@ public class CardService {
      * @param number card number
      * @throws InvalidCardNumberException if card number is wrong
      */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void makeCardUnblockRequest(String number) throws InvalidCardNumberException {
         Card card = cardRepository.findByNumber(number);
         if (card == null) throw new InvalidCardNumberException();
