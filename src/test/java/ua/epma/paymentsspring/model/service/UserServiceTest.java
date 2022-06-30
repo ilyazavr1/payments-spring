@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,20 +30,18 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @Autowired
-    private UserService userService;
-    @MockBean
-    private UserRepository userRepository;
-    @MockBean
-    private RoleRepository roleRepository;
-    @MockBean
-    private BCryptPasswordEncoder passwordEncoder;
 
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private RoleRepository roleRepository;
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
+    @InjectMocks
+    private UserService userService;
 
     private final static Long ID = 1L;
     private final static String FIRST_NAME = "TEST_NAME";

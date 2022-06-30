@@ -2,46 +2,45 @@ package ua.epma.paymentsspring.model.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit4.SpringRunner;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.CardUnblockRequest;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-
 import ua.epma.paymentsspring.model.excwption.*;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
+import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
+import java.util.Collection;
 
-import java.util.*;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class CardServiceTest {
 
-    @Autowired
-    CardService cardService;
-    @MockBean
+
+    @Mock
     private CardRepository cardRepository;
-    @MockBean
+    @Mock
     private UserRepository userRepository;
-    @MockBean
+    @Mock
     private CardUnblockRequestRepository cardUnblockRequestRepository;
+    @Mock
+    private PaymentRepository paymentRepository;
+
+    @InjectMocks
+    CardService cardService;
 
     private User REGISTERED_USER;
     private User COPY_USER;
@@ -69,7 +68,7 @@ class CardServiceTest {
 
     @BeforeEach
     void setUp() {
-        CARD = Card.builder().name(CARD_NAME).number(CARD_NUMBER_1).userId(REGISTERED_USER).money(MONEY_INT100)
+        CARD = Card.builder().id(1L).name(CARD_NAME).number(CARD_NUMBER_1).userId(REGISTERED_USER).money(MONEY_INT100)
                 .blocked(false).underConsideration(false).build();
         CARD_COPY = Card.builder().name(CARD_NAME).number(CARD_NUMBER_1).userId(REGISTERED_USER).money(MONEY_INT100)
                 .blocked(false).underConsideration(false).build();
@@ -152,13 +151,14 @@ class CardServiceTest {
 
     @Test
     void createCardShouldNotSave() throws InvalidCardName {
-        Authentication authentication = Mockito.mock(Authentication.class);
+     /*   Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
-        when(cardRepository.findByNumber(CARD_NUMBER_1)).thenReturn(CARD);
+        when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);*/
+        when(cardRepository.findByNumber(anyString())).thenReturn(CARD);
+
         cardService.createCard(CARD_NAME);
 
         verify(cardRepository, times(0)).save(CARD);
@@ -173,13 +173,14 @@ class CardServiceTest {
 
 
         when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
-        when(cardRepository.findByNumber(CARD_NUMBER_1)).thenReturn(null);
-        when(cardRepository.save(CARD)).thenReturn(CARD);
+        when(cardRepository.findByNumber(anyString())).thenReturn(null);
+        when(cardRepository.save(any(Card.class))).thenReturn(any(Card.class));
 
 
         cardService.createCard(CARD_NAME);
 
-        assertNotNull(cardRepository.save(CARD));
+
+        verify(cardRepository, times(1)).save(any(Card.class));
 
 
     }
@@ -232,7 +233,7 @@ class CardServiceTest {
         when(authentication.getAuthorities()).thenReturn(cl);
         when(cl.toString()).thenReturn("[ADMINISTRATOR]");
 
-        when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
+
         when(cardRepository.findByNumber(CARD_NUMBER_1)).thenReturn(null);
 
 
@@ -346,10 +347,10 @@ class CardServiceTest {
     }
 
     @Test
-    void makeCardUnblockRequestThrowInvalidCardNumberException(){
+    void makeCardUnblockRequestThrowInvalidCardNumberException() {
         when(cardRepository.findByNumber(CARD_NUMBER_1)).thenReturn(null);
 
-        assertThrows(InvalidCardNumberException.class, ()->cardService.makeCardUnblockRequest(CARD_NUMBER_1));
+        assertThrows(InvalidCardNumberException.class, () -> cardService.makeCardUnblockRequest(CARD_NUMBER_1));
     }
 
     @Test
