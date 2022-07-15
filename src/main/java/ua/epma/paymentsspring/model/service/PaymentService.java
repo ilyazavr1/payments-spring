@@ -56,7 +56,7 @@ public class PaymentService {
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void makePayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
-        Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
+        Card cardFrom = cardRepository.findByNumber(paymentDto.getCardSenderNumber());
         Card cardTo = cardRepository.findByNumber(paymentDto.getCardDestinationNumber());
 
         if (cardService.transferMoney(cardFrom, cardTo, paymentDto.getMoney())) {

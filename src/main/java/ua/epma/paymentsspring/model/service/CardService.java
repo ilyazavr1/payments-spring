@@ -48,7 +48,9 @@ public class CardService {
     public List<Card> getCardListByCurrentUser() {
         return cardRepository.findByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
-
+    public List<Card> getCardListByUserEmail(String email) {
+        return cardRepository.findByUserId(userRepository.findByEmail(email));
+    }
     public Card getCardByCurrentUserByNumber(String number) throws InvalidCardNumberException {
 
         Card card = cardRepository.findByNumberAndUserId(number, userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
@@ -100,10 +102,10 @@ public class CardService {
      * @param name card name
      * @throws InvalidCardName if name is invalid
      */
-    public void createCardAndAddToUser(String name, String email) throws InvalidCardName {
+    public Card createCardAndAddToUser(String name, String email) throws InvalidCardName {
         if (name.length() > 30 || name.length() < 3) throw new InvalidCardName();
         String number = generateCardNumber();
-        if (cardRepository.findByNumber(number) != null) return;
+        if (cardRepository.findByNumber(number) != null) return null;
 
         Card card = Card.builder()
                 .name(name)
@@ -111,7 +113,7 @@ public class CardService {
                 .userId(userRepository.findByEmail(email))
                 .build();
 
-        cardRepository.save(card);
+       return cardRepository.save(card);
     }
 
     /**
