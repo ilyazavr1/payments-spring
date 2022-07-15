@@ -14,7 +14,7 @@ import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.CardUnblockRequest;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.excwption.*;
+import ua.epma.paymentsspring.model.exception.*;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
@@ -92,7 +92,7 @@ class CardServiceTest {
         SecurityContextHolder.setContext(securityContext);
 
 
-        when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
+         when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
         when(cardRepository.findByNumberAndUserId(CARD_NUMBER_1, REGISTERED_USER)).thenReturn(null);
         cardService.updateCardWithMoney(CARD_NUMBER_1, MONEY100);
 

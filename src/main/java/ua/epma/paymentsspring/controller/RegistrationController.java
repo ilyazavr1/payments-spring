@@ -7,7 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,7 @@ import ua.epma.paymentsspring.model.constants.UriPath;
 import ua.epma.paymentsspring.model.dto.UserDto;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.excwption.UserAlreadyExistException;
+import ua.epma.paymentsspring.model.exception.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.service.UserService;
 
 

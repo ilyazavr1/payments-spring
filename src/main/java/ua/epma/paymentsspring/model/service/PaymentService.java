@@ -1,7 +1,6 @@
 package ua.epma.paymentsspring.model.service;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.service.NullServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
-import ua.epma.paymentsspring.model.excwption.BlockedCardException;
-import ua.epma.paymentsspring.model.excwption.InvalidBalanceOnCardException;
-import ua.epma.paymentsspring.model.excwption.InvalidCardNumberException;
+import ua.epma.paymentsspring.model.exception.BlockedCardException;
+import ua.epma.paymentsspring.model.exception.InvalidBalanceOnCardException;
+import ua.epma.paymentsspring.model.exception.InvalidCardNumberException;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
@@ -72,22 +71,7 @@ public class PaymentService {
         }
     }
 
-    /*public void updatePreparedPayments(Payment payment) {
-        List<Payment> paymentList = paymentRepository.getPaymentsByUserIdAndIsSendFalse(payment.getUserId());
-        if (paymentList.isEmpty()) return;
 
-        Map<Long, Card> longCardMapFrom = cardRepository.findByUserId(payment.getUserId()).stream().collect(Collectors.toMap(Card::getId, Function.identity()));
-        Map<Long, Card> longCardMapTo = cardRepository.findByUserId(payment.getUserDestinationId()).stream().collect(Collectors.toMap(Card::getId, Function.identity()));
-
-
-
-        paymentList.forEach(p -> {
-            p.setBalance(longCardMapFrom.get(p.getCardSenderId().getId()).getMoney());
-            p.setBalanceDestination(longCardMapTo.get(p.getCardDestinationId().getId()).getMoney());
-        });
-
-        paymentRepository.saveAll(paymentList);
-    }*/
 
 
     /**

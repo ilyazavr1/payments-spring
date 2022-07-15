@@ -7,12 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.epma.paymentsspring.model.entity.Card;
-import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.excwption.AuthenticationFailedException;
-import ua.epma.paymentsspring.model.excwption.InvalidCardNumberException;
+import ua.epma.paymentsspring.model.exception.AuthenticationFailedException;
+import ua.epma.paymentsspring.model.exception.InvalidCardNumberException;
 import ua.epma.paymentsspring.model.service.CardService;
 import ua.epma.paymentsspring.model.service.UserService;
 

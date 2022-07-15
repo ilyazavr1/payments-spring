@@ -17,15 +17,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
-import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.excwption.*;
+import ua.epma.paymentsspring.model.exception.*;
 import ua.epma.paymentsspring.model.service.CardService;
 import ua.epma.paymentsspring.model.service.PaymentService;
 import ua.epma.paymentsspring.model.service.UserService;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 

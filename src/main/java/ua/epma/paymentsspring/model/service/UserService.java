@@ -3,10 +3,13 @@ package ua.epma.paymentsspring.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.dto.UserDto;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.excwption.UserAlreadyExistException;
+import ua.epma.paymentsspring.model.exception.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.repository.RoleRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
@@ -58,6 +61,7 @@ public class UserService {
      * @return saved User in database.
      * @throws UserAlreadyExistException if email already exists in database.
      */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public User registerUser(UserDto userDto) throws UserAlreadyExistException {
         if (emailExists(userDto.getEmail())) throw new UserAlreadyExistException();
 
