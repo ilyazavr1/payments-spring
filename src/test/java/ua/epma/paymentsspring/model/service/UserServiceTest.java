@@ -61,7 +61,7 @@ class UserServiceTest {
         DTO_USER = UserDto.builder()
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .surname(SURNAME)
+                .patronymic(SURNAME)
                 .email(REGISTERED_EMAIL)
                 .password(PASSWORD)
                 .build();

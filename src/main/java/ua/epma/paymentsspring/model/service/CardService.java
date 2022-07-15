@@ -62,15 +62,16 @@ public class CardService {
     }
 
     public List<CardUnblockRequest> getCardUnblockRequest() {
-               return cardUnblockRequestRepository.findAllByOrderByIdDesc();
+        return cardUnblockRequestRepository.findAllByOrderByIdDesc();
     }
 
 
     /**
      * Adds the money amount to the card
+     *
      * @param number Card number
-     * @param money money to add to the Card
-     * @throws BlockedCardException if Card is blocked
+     * @param money  money to add to the Card
+     * @throws BlockedCardException        if Card is blocked
      * @throws InvalidMoneyAmountException if wrong card number
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
@@ -95,10 +96,11 @@ public class CardService {
      * Generates card number, if it exists interrupts method.
      * Creates new card signed to User in current session.
      * Saves new card to database.
+     *
      * @param name card name
      * @throws InvalidCardName if name is invalid
      */
-    public void createCard(String name) throws InvalidCardName {
+    public void createCardAndAddToUser(String name, String email) throws InvalidCardName {
         if (name.length() > 30 || name.length() < 3) throw new InvalidCardName();
         String number = generateCardNumber();
         if (cardRepository.findByNumber(number) != null) return;
@@ -106,7 +108,7 @@ public class CardService {
         Card card = Card.builder()
                 .name(name)
                 .number(number)
-                .userId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()))
+                .userId(userRepository.findByEmail(email))
                 .build();
 
         cardRepository.save(card);
@@ -116,6 +118,7 @@ public class CardService {
      * Checks whether the card is under considered, if so, then updates the unlock requests.
      * Unblock card and sets under consideration to false.
      * Saves Card to database.
+     *
      * @param number Card number
      * @throws InvalidCardNumberException if card number is wrong
      */
@@ -146,9 +149,10 @@ public class CardService {
 
     /**
      * If user entered right password than blocks card by number.
-     * @param number card number
+     *
+     * @param number   card number
      * @param password user entered password
-     * @throws InvalidCardNumberException if card number is wrong
+     * @throws InvalidCardNumberException    if card number is wrong
      * @throws AuthenticationFailedException is user entered wrong password
      */
     public void blockCardByNumber(String number, String password) throws InvalidCardNumberException, AuthenticationFailedException {
@@ -170,6 +174,7 @@ public class CardService {
 
     /**
      * Changes status of unblock request to processed.
+     *
      * @param id request id
      */
     public void processedCardUnblockRequest(Long id) {
@@ -179,8 +184,9 @@ public class CardService {
     }
 
     /**
-     *  Changes status of card to under consideration.
-     *  Creates card unblock request.
+     * Changes status of card to under consideration.
+     * Creates card unblock request.
+     *
      * @param number card number
      * @throws InvalidCardNumberException if card number is wrong
      */
@@ -196,7 +202,7 @@ public class CardService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public boolean  transferMoney(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, BlockedCardException, InvalidBalanceOnCardException {
+    public boolean transferMoney(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, BlockedCardException, InvalidBalanceOnCardException {
 
         if (!validateTransfer(cardFrom, cardTo, money)) return false;
 

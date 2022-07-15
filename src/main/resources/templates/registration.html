@@ -40,12 +40,12 @@
 
             <div class="form-group input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" th:text="#{surname}"></span>
+                    <span class="input-group-text" th:text="#{patronymic}"></span>
                 </div>
-                <input type="text" name="surname" class="form-control" th:field="*{surname}" id="surname" maxlength="64">
+                <input type="text" name="patronymic" class="form-control" th:field="*{patronymic}" id="surname" maxlength="64">
             </div>
-            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('surname')}"
-                 th:text="#{exception.surnameNotValid}">
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('patronymic')}"
+                 th:text="#{exception.patronymicNotValid}">
             </div>
 
             <div class="form-group input-group">

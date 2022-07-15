@@ -26,7 +26,7 @@ public class UserDto {
     @NotEmpty
     @Size(min = 3, max = 20, message = "to long")
     @Pattern(regexp = "^(\\p{L}){1}( |[\\p{L}]){2,20}$")
-    private String surname;
+    private String patronymic;
 
     @NotEmpty
     @Size(max = 30)
@@ -45,8 +45,8 @@ public class UserDto {
         this.lastName = lastName.trim();
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname.trim();
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic.trim();
     }
 
     public void setEmail(String email) {

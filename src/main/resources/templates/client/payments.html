@@ -76,7 +76,7 @@
                 </thead>
                 <tr th:each="payment : ${paymentList}">
                     <td th:text="${payment.id}"></td>
-                    <td th:text="${payment.userId.firstName + ' ' + payment.userId.lastName+ ' ' + payment.userId.surname}"></td>
+                    <td th:text="${payment.userId.firstName + ' ' + payment.userId.lastName+ ' ' + payment.userId.getPatronymic}"></td>
                     <td th:text="${payment.cardSenderId.number}"></td>
 
                     <td th:if="${session.user.id == payment.userId.id}">
@@ -99,7 +99,7 @@
                         <span th:if="${payment.send == false}"
                               th:text="${payment.balanceDestination + payment.money}"></span>
                     </td>
-                    <td th:text="${payment.userDestinationId.firstName + ' ' + payment.userDestinationId.lastName+ ' ' + payment.userDestinationId.surname}"></td>
+                    <td th:text="${payment.userDestinationId.firstName + ' ' + payment.userDestinationId.lastName+ ' ' + payment.userDestinationId.getPatronymic}"></td>
                     <td style="width: 2000px" th:text="${payment.cardDestinationId.number}"></td>
                     <td th:text="${#temporals.format(payment.creationTimestamp, 'dd-MM-yyyy HH:mm')}"></td>
 

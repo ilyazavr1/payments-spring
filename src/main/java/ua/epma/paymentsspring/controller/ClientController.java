@@ -104,7 +104,7 @@ public class ClientController {
     @PostMapping("/card/create")
     public String postCardCreate(@RequestParam(name = "name") String name, ModelMap model) {
         try {
-            cardService.createCard(name);
+            cardService.createCardAndAddToUser(name, SecurityContextHolder.getContext().getAuthentication().getName());
         } catch (InvalidCardName e) {
             log.warn("Invalid card name input: {}", name);
             return "redirect:/client/card/create?error";

@@ -68,7 +68,7 @@ public class UserService {
         User user = User.builder()
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
-                .surname(userDto.getSurname())
+                .patronymic(userDto.getPatronymic())
                 .email(userDto.getEmail())
                 .password(encoder.encode(userDto.getPassword()))
                 .blocked(false)

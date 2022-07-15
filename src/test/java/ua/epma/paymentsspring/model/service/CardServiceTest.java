@@ -146,7 +146,7 @@ class CardServiceTest {
 
     @Test
     void createCardThrowsInvalidCardNameException() {
-        assertThrows(InvalidCardName.class, () -> cardService.createCard(INVALID_CARD_NAME));
+        assertThrows(InvalidCardName.class, () -> cardService.createCardAndAddToUser(INVALID_CARD_NAME, ""));
     }
 
     @Test
@@ -159,7 +159,7 @@ class CardServiceTest {
         when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);*/
         when(cardRepository.findByNumber(anyString())).thenReturn(CARD);
 
-        cardService.createCard(CARD_NAME);
+        cardService.createCardAndAddToUser(CARD_NAME, "");
 
         verify(cardRepository, times(0)).save(CARD);
     }
@@ -177,7 +177,7 @@ class CardServiceTest {
         when(cardRepository.save(any(Card.class))).thenReturn(any(Card.class));
 
 
-        cardService.createCard(CARD_NAME);
+        cardService.createCardAndAddToUser(CARD_NAME, "");
 
 
         verify(cardRepository, times(1)).save(any(Card.class));
