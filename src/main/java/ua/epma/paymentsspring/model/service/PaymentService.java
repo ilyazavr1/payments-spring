@@ -21,7 +21,6 @@ import ua.epma.paymentsspring.model.repository.UserRepository;
 import java.time.LocalDateTime;
 
 
-
 /**
  * Service for business logic related with Payment.
  *
@@ -72,8 +71,6 @@ public class PaymentService {
     }
 
 
-
-
     /**
      * Gets prepared Payment from database.
      * Calls the method that transfers money.
@@ -113,7 +110,7 @@ public class PaymentService {
      * @throws BlockedCardException          if the card is blocked
      */
     public void createPreparedPayment(PaymentDto paymentDto) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
-        Card cardFrom = cardService.getCardByCurrentUserByNumber(paymentDto.getCardSenderNumber());
+        Card cardFrom = cardRepository.findByNumber(paymentDto.getCardSenderNumber());
         Card cardTo = cardRepository.findByNumber(paymentDto.getCardDestinationNumber());
 
         cardService.validateTransfer(cardFrom, cardTo, paymentDto.getMoney());

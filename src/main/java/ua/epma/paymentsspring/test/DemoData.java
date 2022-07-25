@@ -14,6 +14,7 @@ import ua.epma.paymentsspring.model.service.PaymentService;
 import ua.epma.paymentsspring.model.service.UserService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +41,8 @@ public class DemoData implements ApplicationRunner {
         createUsers();
         createAddCardsToUsers();
         topUpAllCards();
-        makePayments();
+        makeSentPayments();
+        makePreparedPayments();
     }
 
 
@@ -64,6 +66,9 @@ public class DemoData implements ApplicationRunner {
                 cardService.createCardAndAddToUser(m.group() + "Card2", email);
             }
         }
+
+        cardService.createCardAndAddToUser("vladCard3", "vlad@gmail.com");
+        cardService.createCardAndAddToUser("vladCard4", "vlad@gmail.com");
     }
 
     private void topUpAllCards() {
@@ -81,7 +86,7 @@ public class DemoData implements ApplicationRunner {
     }
 
 
-    private void makePayments() throws InvalidBalanceOnCardException, InvalidCardNumberException, BlockedCardException {
+    private void makeSentPayments() throws InvalidBalanceOnCardException, InvalidCardNumberException, BlockedCardException {
         Card from = cardService.getCardListByUserEmail("vlad@gmail.com").get(0);
         Card to = cardService.getCardListByUserEmail("artem@gmail.com").get(0);
         PaymentDto paymentDto = PaymentDto.builder()
@@ -91,8 +96,24 @@ public class DemoData implements ApplicationRunner {
                 .build();
 
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             paymentService.makePayment(paymentDto);
+        }
+
+    }
+
+    private void makePreparedPayments() throws InvalidBalanceOnCardException, InvalidCardNumberException, BlockedCardException {
+        Card from = cardService.getCardListByUserEmail("vlad@gmail.com").get(1);
+        Card to = cardService.getCardListByUserEmail("nikita@gmail.com").get(0);
+        PaymentDto paymentDto = PaymentDto.builder()
+                .cardSenderNumber(from.getNumber())
+                .cardDestinationNumber(to.getNumber())
+                .money(100)
+                .build();
+
+
+        for (int i = 0; i < 3; i++) {
+            paymentService.createPreparedPayment(paymentDto);
         }
 
 

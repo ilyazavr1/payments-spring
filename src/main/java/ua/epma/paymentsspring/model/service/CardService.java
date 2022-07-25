@@ -48,9 +48,11 @@ public class CardService {
     public List<Card> getCardListByCurrentUser() {
         return cardRepository.findByUserId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
+
     public List<Card> getCardListByUserEmail(String email) {
         return cardRepository.findByUserId(userRepository.findByEmail(email));
     }
+
     public Card getCardByCurrentUserByNumber(String number) throws InvalidCardNumberException {
 
         Card card = cardRepository.findByNumberAndUserId(number, userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
@@ -69,7 +71,7 @@ public class CardService {
 
 
     /**
-     * Adds the money amount to the card
+     * Adds the money amount to the card.
      *
      * @param number Card number
      * @param money  money to add to the Card
@@ -77,14 +79,17 @@ public class CardService {
      * @throws InvalidMoneyAmountException if wrong card number
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public void updateCardWithMoney(String number, String money) throws BlockedCardException, InvalidMoneyAmountException {
+    public void updateCardWithMoney(final String number, final String money) throws BlockedCardException, InvalidMoneyAmountException {
         Card card;
+
         try {
             card = getCardByCurrentUserByNumber(number);
         } catch (InvalidCardNumberException e) {
             return;
         }
-        if (card.isBlocked()) throw new BlockedCardException();
+        if (card.isBlocked()) {
+            throw new BlockedCardException();
+        }
 
         card.setMoney(card.getMoney() + validateMoney(money));
 
@@ -102,8 +107,11 @@ public class CardService {
      * @param name card name
      * @throws InvalidCardName if name is invalid
      */
-    public Card createCardAndAddToUser(String name, String email) throws InvalidCardName {
-        if (name.length() > 30 || name.length() < 3) throw new InvalidCardName();
+    public Card createCardAndAddToUser(String name, String email)
+            throws InvalidCardName {
+        if (name.length() > 30 || name.length() < 3) {
+            throw new InvalidCardName();
+        }
         String number = generateCardNumber();
         if (cardRepository.findByNumber(number) != null) return null;
 
@@ -113,7 +121,7 @@ public class CardService {
                 .userId(userRepository.findByEmail(email))
                 .build();
 
-       return cardRepository.save(card);
+        return cardRepository.save(card);
     }
 
     /**

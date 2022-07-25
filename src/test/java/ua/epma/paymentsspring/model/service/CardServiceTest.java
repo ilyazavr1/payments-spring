@@ -76,10 +76,10 @@ class CardServiceTest {
         CARD_REQUEST_PROCESSED_FALSE = CardUnblockRequest.builder().cardId(CARD).userId(REGISTERED_USER).isProcessed(false).build();
         CARD_REQUEST_PROCESSED_COPY = CardUnblockRequest.builder().cardId(CARD).userId(REGISTERED_USER).isProcessed(false).build();
 
-        REGISTERED_USER = User.builder().id(1L).firstName(FIRST_NAME).lastName(LAST_NAME).surname(SURNAME)
+        REGISTERED_USER = User.builder().id(1L).firstName(FIRST_NAME).lastName(LAST_NAME).patronymic(SURNAME)
                 .email(REGISTERED_EMAIL).password(HASHED_PASSWORD).role(CLIENT_ROLE).blocked(false).build();
 
-        COPY_USER = User.builder().id(1L).firstName(FIRST_NAME).lastName(LAST_NAME).surname(SURNAME)
+        COPY_USER = User.builder().id(1L).firstName(FIRST_NAME).lastName(LAST_NAME).patronymic(SURNAME)
                 .email(REGISTERED_EMAIL).password(HASHED_PASSWORD).role(CLIENT_ROLE).blocked(false).build();
     }
 
