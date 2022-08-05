@@ -37,7 +37,8 @@ public class PaymentService {
 
 
     public Page<Payment> getPaymentPagination(Pageable pageable) {
-        return paymentRepository.findPaymentsByUserIdOrUserDestinationId(userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
+        return paymentRepository.findPaymentsByUserIdOrUserDestinationId(
+                userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
                 userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()),
                 pageable);
     }
@@ -113,9 +114,9 @@ public class PaymentService {
         Card cardFrom = cardRepository.findByNumber(paymentDto.getCardSenderNumber());
         Card cardTo = cardRepository.findByNumber(paymentDto.getCardDestinationNumber());
 
-        cardService.validateTransfer(cardFrom, cardTo, paymentDto.getMoney());
-
-        paymentRepository.save(createPaymentWithStatus(paymentDto, cardFrom, cardTo, false));
+        if (cardService.validateTransfer(cardFrom, cardTo, paymentDto.getMoney())) {
+            paymentRepository.save(createPaymentWithStatus(paymentDto, cardFrom, cardTo, false));
+        }
     }
 
 

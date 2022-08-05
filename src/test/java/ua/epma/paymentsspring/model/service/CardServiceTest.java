@@ -92,7 +92,7 @@ class CardServiceTest {
         SecurityContextHolder.setContext(securityContext);
 
 
-         when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
+        when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
         when(cardRepository.findByNumberAndUserId(CARD_NUMBER_1, REGISTERED_USER)).thenReturn(null);
         cardService.updateCardWithMoney(CARD_NUMBER_1, MONEY100);
 

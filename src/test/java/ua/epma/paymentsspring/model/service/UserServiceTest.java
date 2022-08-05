@@ -52,7 +52,7 @@ class UserServiceTest {
         REGISTERED_USER = User.builder()
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .surname(SURNAME)
+                .patronymic(SURNAME)
                 .email(REGISTERED_EMAIL)
                 .password(HASHED_PASSWORD)
                 .role(CLIENT_ROLE)

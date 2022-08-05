@@ -1,4 +1,4 @@
-package ua.epma.paymentsspring.test;
+package ua.epma.paymentsspring.demoData;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -14,7 +14,6 @@ import ua.epma.paymentsspring.model.service.PaymentService;
 import ua.epma.paymentsspring.model.service.UserService;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
