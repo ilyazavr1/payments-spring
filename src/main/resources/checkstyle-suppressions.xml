@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+        "https://checkstyle.org/dtds/suppressions_1_0.dtd">
+
+<suppressions>
+    <suppress checks="Javadoc" files="."/>
+    <suppress checks="MagicNumber" files="."/>
+    <suppress checks="FinalParameters" files="."/>
+    <suppress checks="DesignForExtension" files="."/>
+    <suppress checks="LineLength" files="."/>
+    <suppress checks="HiddenField" files="."/>
+    <suppress checks="AvoidStarImport" files="."/>
+    <suppress checks="OperatorWrap" files="."/>
+    <suppress checks="HideUtilityClassConstructor" files="PaymentsSpringApplication.java"/>
+    <suppress checks="HiddenField" files="ApplicationUserDetails.java"/>
+
+    <suppress files="messages.properties" checks="[a-zA-Z0-9]*"/>
+    <suppress files="messages_uk.properties" checks="[a-zA-Z0-9]*"/>
+</suppressions>

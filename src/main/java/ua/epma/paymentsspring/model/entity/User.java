@@ -37,7 +37,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "blocked" )
+    @Column(name = "blocked")
     private boolean blocked;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -46,8 +46,12 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
         User user = (User) o;
         return id != null && Objects.equals(id, user.id);
     }

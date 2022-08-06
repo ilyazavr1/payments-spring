@@ -19,6 +19,7 @@ import java.util.Optional;
 
 /**
  * Service for business logic related with User.
+ *
  * @author Illia
  */
 @AllArgsConstructor
@@ -34,7 +35,7 @@ public class UserService {
         return userRepository.getUsers();
     }
 
-    public User findUserByEmail(String email){
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -51,7 +52,7 @@ public class UserService {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             user.get().setBlocked(false);
-           return userRepository.save(user.get());
+            return userRepository.save(user.get());
         }
         return null;
     }
@@ -63,7 +64,9 @@ public class UserService {
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public User registerUser(UserDto userDto) throws UserAlreadyExistException {
-        if (emailExists(userDto.getEmail())) throw new UserAlreadyExistException();
+        if (emailExists(userDto.getEmail())) {
+            throw new UserAlreadyExistException();
+        }
 
         User user = User.builder()
                 .firstName(userDto.getFirstName())

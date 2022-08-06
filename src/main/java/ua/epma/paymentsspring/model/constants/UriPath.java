@@ -1,18 +1,18 @@
 package ua.epma.paymentsspring.model.constants;
 
-public class UriPath {
-
-    public final static String LOGIN ="/login";
-    public final static String LOGIN_REDIRECT ="/login/redirect";
-    public final static String REGISTRATION = "/registration";
-    public final static String CLIENT_CARDS = "/client/cards";
-    public final static String CLIENT_CREATE_CARD = "/card/create";
-
+public final class UriPath {
+    public static final String LOGIN = "/login";
+    public static final String LOGIN_REDIRECT = "/login/redirect";
+    public static final String REGISTRATION = "/registration";
+    public static final String CLIENT_CARDS = "/client/cards";
+    public static final String CLIENT_CREATE_CARD = "/card/create";
 
 
+    public static final String ADMIN_TEST = "/admin/users";
 
+    private UriPath() {
 
+    }
 
-    public final static String ADMIN_TEST = "/admin/users";
 
 }

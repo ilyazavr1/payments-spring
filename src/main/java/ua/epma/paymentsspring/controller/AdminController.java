@@ -37,20 +37,26 @@ public class AdminController {
     @PostMapping("/user/{id}/block")
     public String getUsersBlock(Model model, @PathVariable String id) {
         User user = userService.blockUserById(Long.valueOf(id));
-        if (user != null) log.info("ADMINISTRATOR {} blocked {}",
-                SecurityContextHolder.getContext().getAuthentication().getName(), user.getEmail());
-        else log.info("ADMINISTRATOR {} tried to block non-existent user [id: {}]",
-                SecurityContextHolder.getContext().getAuthentication().getName(), id);
+        if (user != null) {
+            log.info("ADMINISTRATOR {} blocked {}",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), user.getEmail());
+        } else {
+            log.info("ADMINISTRATOR {} tried to block non-existent user [id: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), id);
+        }
         return "redirect:/admin/users";
     }
 
     @PostMapping("/user/{id}/unblock")
     public String getUsersUnblock(Model model, @PathVariable String id) {
         User user = userService.unblockUserById(Long.valueOf(id));
-        if (user != null) log.info("ADMINISTRATOR {} unblocked {}",
-                SecurityContextHolder.getContext().getAuthentication().getName(), user.getEmail());
-        else log.info("ADMINISTRATOR {} tried to unblock non-existent user [id: {}]",
-                SecurityContextHolder.getContext().getAuthentication().getName(),id);
+        if (user != null) {
+            log.info("ADMINISTRATOR {} unblocked {}",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), user.getEmail());
+        } else {
+            log.info("ADMINISTRATOR {} tried to unblock non-existent user [id: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), id);
+        }
         return "redirect:/admin/users";
     }
 
@@ -66,7 +72,9 @@ public class AdminController {
     public String getCardBlock(Model model, @PathVariable String cardId, @PathVariable String userid) {
         Card card = cardService.getCardById(Long.valueOf(cardId));
 
-        if (card == null) return "redirect:/admin/user/" + userid + "/cards";
+        if (card == null) {
+            return "redirect:/admin/user/" + userid + "/cards";
+        }
 
         model.addAttribute("card", card);
 
@@ -119,14 +127,14 @@ public class AdminController {
         if (referer.contains("unblock-request")) {
             if (!requestId.isEmpty()) {
                 cardService.processedCardUnblockRequest(Long.valueOf(requestId));
-                log.info("ADMINISTRATOR {} unblocked card [number: {}]"
-                        , SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+                log.info("ADMINISTRATOR {} unblocked card [number: {}]",
+                        SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
             }
             return "redirect:/admin/cards/unblock-request";
         }
 
-        log.info("ADMINISTRATOR {} unblocked card [number: {}]"
-                , SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+        log.info("ADMINISTRATOR {} unblocked card [number: {}]",
+                SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
         return "redirect:/admin/user/" + clientId + "/cards";
     }
 }

@@ -27,7 +27,7 @@ import javax.validation.Valid;
 @Controller
 public class RegistrationController {
 
-    UserService userService;
+    private UserService userService;
 
 
     @GetMapping(UriPath.REGISTRATION)

@@ -4,7 +4,6 @@ package ua.epma.paymentsspring.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Getter

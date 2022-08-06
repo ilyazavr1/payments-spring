@@ -16,7 +16,7 @@ import ua.epma.paymentsspring.model.repository.UserRepository;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 
@@ -76,12 +76,15 @@ class UserServiceTest {
 
     @Test
     void registerUserReturnSavedUser() throws UserAlreadyExistException {
-        when(userRepository.findByEmail(REGISTERED_EMAIL)).thenReturn(null);
-        when(userRepository.save(REGISTERED_USER)).thenReturn(REGISTERED_USER);
+        when(userRepository.findByEmail(REGISTERED_USER.getEmail())).thenReturn(null);
         when(passwordEncoder.encode(PASSWORD)).thenReturn(HASHED_PASSWORD);
         when(roleRepository.findByRoleEnum(Role.RoleEnum.CLIENT)).thenReturn(CLIENT_ROLE);
+       // REGISTERED_USER.setId(1L);
+       // when(userRepository.save(REGISTERED_USER)).thenReturn(REGISTERED_USER);
 
-        assertEquals(userService.registerUser(DTO_USER), REGISTERED_USER);
+        userService.registerUser(DTO_USER);
+        //assertEquals(userService.registerUser(DTO_USER), REGISTERED_USER);
+
         verify(userRepository, times(1)).save(REGISTERED_USER);
     }
 

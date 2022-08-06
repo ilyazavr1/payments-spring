@@ -25,8 +25,7 @@ public class Role {
     private RoleEnum roleEnum;
 
 
-
-    public enum RoleEnum{
+    public enum RoleEnum {
         ADMINISTRATOR, CLIENT
 
     }

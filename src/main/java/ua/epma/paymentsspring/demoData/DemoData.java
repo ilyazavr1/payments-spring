@@ -1,5 +1,6 @@
 package ua.epma.paymentsspring.demoData;
 
+
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -22,10 +23,10 @@ import java.util.stream.Collectors;
 @Component
 public class DemoData implements ApplicationRunner {
 
-    final UserService userService;
-    final CardService cardService;
-    final PaymentService paymentService;
-    final CardRepository cardRepository;
+    private final UserService userService;
+    private final CardService cardService;
+    private final PaymentService paymentService;
+    private final CardRepository cardRepository;
 
     public DemoData(UserService userService, CardService cardService, PaymentService paymentService, CardRepository cardRepository) {
         this.userService = userService;

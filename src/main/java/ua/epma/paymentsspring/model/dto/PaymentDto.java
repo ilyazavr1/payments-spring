@@ -1,12 +1,8 @@
 package ua.epma.paymentsspring.model.dto;
 
 import lombok.*;
-import ua.epma.paymentsspring.model.entity.Card;
-import ua.epma.paymentsspring.model.entity.User;
 
-import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 
 
 @Getter

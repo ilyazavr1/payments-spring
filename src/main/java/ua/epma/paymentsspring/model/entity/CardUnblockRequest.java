@@ -30,7 +30,7 @@ public class CardUnblockRequest {
     @JoinColumn(name = "card_id", nullable = false)
     private Card cardId;
 
-    @Column(name = "processed" )
-    boolean isProcessed;
+    @Column(name = "processed")
+    private boolean isProcessed;
 
 }

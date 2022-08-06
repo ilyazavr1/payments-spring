@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class ApplicationUserDetails implements UserDetails {
 
-   private User user;
+    private User user;
 
     public ApplicationUserDetails(User user) {
         this.user = user;

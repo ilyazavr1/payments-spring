@@ -21,7 +21,6 @@ import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -57,7 +56,9 @@ public class CardService {
 
         Card card = cardRepository.findByNumberAndUserId(number, userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
 
-        if (card == null) throw new InvalidCardNumberException();
+        if (card == null) {
+            throw new InvalidCardNumberException();
+        }
         return card;
     }
 
@@ -113,7 +114,9 @@ public class CardService {
             throw new InvalidCardName();
         }
         String number = generateCardNumber();
-        if (cardRepository.findByNumber(number) != null) return null;
+        if (cardRepository.findByNumber(number) != null) {
+            return null;
+        }
 
         Card card = Card.builder()
                 .name(name)
@@ -134,7 +137,9 @@ public class CardService {
      */
     public void unblockCardByNumber(String number) throws InvalidCardNumberException {
         Card card = cardRepository.findByNumber(number);
-        if (card == null) throw new InvalidCardNumberException();
+        if (card == null) {
+            throw new InvalidCardNumberException();
+        }
 
         if (card.isUnderConsideration()) {
             updateRequests(card);
@@ -170,13 +175,19 @@ public class CardService {
 
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())) {
             card = cardRepository.findByNumber(number);
-        } else card = getCardByCurrentUserByNumber(number);
-        if (card == null || card.isBlocked()) return;
+        } else {
+            card = getCardByCurrentUserByNumber(number);
+        }
+        if (card == null || card.isBlocked()) {
+            return;
+        }
 
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        if (!encoder.matches(password, user.getPassword())) throw new AuthenticationFailedException();
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new AuthenticationFailedException();
+        }
 
         card.setBlocked(true);
         cardRepository.save(card);
@@ -203,7 +214,9 @@ public class CardService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void makeCardUnblockRequest(String number) throws InvalidCardNumberException {
         Card card = cardRepository.findByNumber(number);
-        if (card == null) throw new InvalidCardNumberException();
+        if (card == null) {
+            throw new InvalidCardNumberException();
+        }
 
         card.setUnderConsideration(true);
 
@@ -214,7 +227,9 @@ public class CardService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public boolean transferMoney(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, BlockedCardException, InvalidBalanceOnCardException {
 
-        if (!validateTransfer(cardFrom, cardTo, money)) return false;
+        if (!validateTransfer(cardFrom, cardTo, money)) {
+            return false;
+        }
 
         cardFrom.setMoney(cardFrom.getMoney() - money);
         cardTo.setMoney(cardTo.getMoney() + money);
@@ -225,18 +240,27 @@ public class CardService {
     }
 
     public boolean validateTransfer(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
-        if (cardTo == null || cardFrom.getNumber().equals(cardTo.getNumber())) throw new InvalidCardNumberException();
-        if (cardFrom.isBlocked() || cardTo.isBlocked()) throw new BlockedCardException();
-        if ((cardFrom.getMoney() - money) < 0) throw new InvalidBalanceOnCardException();
+        if (cardTo == null || cardFrom.getNumber().equals(cardTo.getNumber())) {
+            throw new InvalidCardNumberException();
+        }
+        if (cardFrom.isBlocked() || cardTo.isBlocked()) {
+            throw new BlockedCardException();
+        }
+        if ((cardFrom.getMoney() - money) < 0) {
+            throw new InvalidBalanceOnCardException();
+        }
 
         return true;
     }
 
     public int validateMoney(String money) throws InvalidMoneyAmountException {
-        if (money.isEmpty() || !money.replaceFirst("^0*", "").matches("^[0-9]{0,5}$"))
+        if (money.isEmpty() || !money.replaceFirst("^0*", "").matches("^[0-9]{0,5}$")) {
             throw new InvalidMoneyAmountException();
+        }
         int moneyInt = Integer.parseInt(money);
-        if (moneyInt <= 0 || moneyInt > 10000) throw new InvalidMoneyAmountException();
+        if (moneyInt <= 0 || moneyInt > 10000) {
+            throw new InvalidMoneyAmountException();
+        }
         return moneyInt;
     }
 

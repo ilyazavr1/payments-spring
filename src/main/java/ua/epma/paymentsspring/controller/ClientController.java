@@ -47,7 +47,9 @@ public class ClientController {
         Pageable pageable;
         if (order.equals("asc")) {
             pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).ascending());
-        } else pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).descending());
+        } else {
+            pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).descending());
+        }
 
 
         Page<Card> cardPage = cardService.getCardPagination(pageable);
@@ -70,18 +72,19 @@ public class ClientController {
                                  @RequestParam(defaultValue = "id") String sort,
                                  @RequestParam(defaultValue = "desc") String order,
                                  @RequestParam(defaultValue = "9") String size,
-                                 Model model)  {
+                                 Model model) {
 
 
         Pageable pageable;
         if (order.equals("asc")) {
             pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).ascending());
-        } else pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).descending());
+        } else {
+            pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), Sort.by(sort).descending());
+        }
 
 
         Page<Payment> paymentPage = paymentService.getPaymentPagination(pageable);
         List<Payment> paymentList = paymentPage.getContent();
-
 
 
         model.addAttribute("size", size);
@@ -116,7 +119,9 @@ public class ClientController {
 
     @GetMapping("/card/{number}/top-up")
     public String getCardTopUp(@PathVariable String number, Model model) {
-        if (getCard(number, model)) return "redirect:/client/cards";
+        if (getCard(number, model)) {
+            return "redirect:/client/cards";
+        }
 
         return "/client/cardTopUp";
     }
@@ -139,13 +144,17 @@ public class ClientController {
 
     @GetMapping("/card/{number}/block")
     public String getCardBlock(@PathVariable String number, Model model) {
-        if (getCard(number, model)) return "redirect:/client/cards";
+        if (getCard(number, model)) {
+            return "redirect:/client/cards";
+        }
 
         return "/client/blockCard";
     }
 
     private boolean getCard(@PathVariable String number, Model model) {
-        if (number == null || number.isEmpty()) return true;
+        if (number == null || number.isEmpty()) {
+            return true;
+        }
         Card card;
         try {
             card = cardService.getCardByCurrentUserByNumber(number);
@@ -163,21 +172,20 @@ public class ClientController {
 
     @PostMapping("/card/{number}/block")
     public String postBlockCard(@PathVariable String number, @RequestParam("password") String password) {
-
         try {
             cardService.blockCardByNumber(number, password);
         } catch (InvalidCardNumberException e) {
-            log.warn("CLIENT {} tried block non-existent card [number: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), number);
+            log.warn("CLIENT {} tried block non-existent card [number: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), number);
             return "redirect:/client/cards";
         } catch (AuthenticationFailedException e) {
-            log.warn("CLIENT {} entered the wrong password trying block card [number: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), number);
+            log.warn("CLIENT {} entered the wrong password trying block card [number: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), number);
             return "redirect:/client/card/" + number + "/block?error";
         }
 
-        log.info("CLIENT {} blocked card [number: {}]"
-                , SecurityContextHolder.getContext().getAuthentication().getName(), number);
+        log.info("CLIENT {} blocked card [number: {}]",
+                SecurityContextHolder.getContext().getAuthentication().getName(), number);
         return "redirect:/client/cards";
     }
 
@@ -195,12 +203,12 @@ public class ClientController {
         try {
             cardService.makeCardUnblockRequest(cardNumber);
         } catch (InvalidCardNumberException e) {
-            log.warn("CLIENT {} tried to make an unlock request for non-existent card [number: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+            log.warn("CLIENT {} tried to make an unlock request for non-existent card [number: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
             return "redirect:/client/cards";
         }
-        log.info("CLIENT {} made an unlock request for card [number: {}]"
-                , SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+        log.info("CLIENT {} made an unlock request for card [number: {}]",
+                SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
         return "redirect:/client/cards";
     }
 
@@ -245,22 +253,22 @@ public class ClientController {
             paymentService.confirmPayment(Long.valueOf(paymentId));
         } catch (InvalidBalanceOnCardException e) {
             redirectAttributes.addAttribute("invalidBalance", paymentId);
-            log.warn("CLIENT {} tried to confirm prepared payment for card with invalid balance[payment id: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
+            log.warn("CLIENT {} tried to confirm prepared payment for card with invalid balance[payment id: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
             return "redirect:/client/payments";
         } catch (InvalidCardNumberException e) {
-            log.warn("CLIENT {} tried to confirm prepared payment for for non-existent card [payment id: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
+            log.warn("CLIENT {} tried to confirm prepared payment for for non-existent card [payment id: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
             return "redirect:/client/payments";
         } catch (BlockedCardException e) {
-            log.warn("CLIENT {} tried to confirm prepared payment for blocked card [payment id: {}]"
-                    , SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
+            log.warn("CLIENT {} tried to confirm prepared payment for blocked card [payment id: {}]",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
             redirectAttributes.addAttribute("blockedCard", paymentId);
             return "redirect:/client/payments";
         }
 
-        log.info("CLIENT {} confirmed prepared payment [payment id: {}]"
-                , SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
+        log.info("CLIENT {} confirmed prepared payment [payment id: {}]",
+                SecurityContextHolder.getContext().getAuthentication().getName(), paymentId);
         return "redirect:/client/payments";
     }
 

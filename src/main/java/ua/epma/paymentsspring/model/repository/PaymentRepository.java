@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.entity.Payment;
 import ua.epma.paymentsspring.model.entity.User;
 
-import java.util.List;
-
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
