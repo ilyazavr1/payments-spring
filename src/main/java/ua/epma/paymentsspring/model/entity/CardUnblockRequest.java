@@ -6,13 +6,10 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
-@EqualsAndHashCode
+@Data
 @Table(name = "card_unblock_requests")
 public class CardUnblockRequest {
 

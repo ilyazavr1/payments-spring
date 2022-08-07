@@ -1,19 +1,18 @@
 package ua.epma.paymentsspring.model.entity;
 
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
+@Data
 @Table(name = "users")
 public class User {
 
@@ -44,7 +43,7 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @Override
+/*    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -59,5 +58,5 @@ public class User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
+    }*/
 }
