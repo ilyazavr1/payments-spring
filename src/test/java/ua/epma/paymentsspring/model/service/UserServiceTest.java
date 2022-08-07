@@ -85,7 +85,7 @@ class UserServiceTest {
         userService.registerUser(DTO_USER);
         //assertEquals(userService.registerUser(DTO_USER), REGISTERED_USER);
 
-        verify(userRepository, times(1)).save(REGISTERED_USER);
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test

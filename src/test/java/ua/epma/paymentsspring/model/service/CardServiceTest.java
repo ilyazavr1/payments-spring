@@ -166,18 +166,18 @@ class CardServiceTest {
 
     @Test
     void createCardShouldSave() throws InvalidCardName {
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
 
 
-        when(userRepository.findByEmail(securityContext.getAuthentication().getName())).thenReturn(REGISTERED_USER);
+
+        when(userRepository.findByEmail(REGISTERED_EMAIL)).thenReturn(REGISTERED_USER);
+        // when(userRepository.findByEmail(REGISTERED_EMAIL)).thenReturn(REGISTERED_USER);
+
         when(cardRepository.findByNumber(anyString())).thenReturn(null);
+
         when(cardRepository.save(any(Card.class))).thenReturn(any(Card.class));
 
 
-        cardService.createCardAndAddToUser(CARD_NAME, "");
+        cardService.createCardAndAddToUser(CARD_NAME, REGISTERED_EMAIL);
 
 
         verify(cardRepository, times(1)).save(any(Card.class));

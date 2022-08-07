@@ -108,8 +108,7 @@ public class CardService {
      * @param name card name
      * @throws InvalidCardName if name is invalid
      */
-    public Card createCardAndAddToUser(String name, String email)
-            throws InvalidCardName {
+    public Card createCardAndAddToUser(String name, String email) throws InvalidCardName {
         if (name.length() > 30 || name.length() < 3) {
             throw new InvalidCardName();
         }
