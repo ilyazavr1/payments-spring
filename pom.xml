@@ -6,12 +6,11 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.6.6</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>ua.epma</groupId>
 	<artifactId>payments-spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-<!--	<packaging>war</packaging>-->
 	<name>payments-spring</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -143,6 +142,7 @@
 			<artifactId>flyway-core</artifactId>
 			<version>8.5.13</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -158,6 +158,10 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<profiles>
+						<profile>dev</profile>
+						<profile>test</profile>
+					</profiles>
 				</configuration>
 			</plugin>
 

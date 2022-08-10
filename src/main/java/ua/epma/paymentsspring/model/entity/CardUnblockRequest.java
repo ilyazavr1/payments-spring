@@ -2,6 +2,7 @@ package ua.epma.paymentsspring.model.entity;
 
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -28,6 +29,7 @@ public class CardUnblockRequest {
     private Card cardId;
 
     @Column(name = "processed")
+    @ColumnDefault("false")
     private boolean isProcessed;
 
 }
