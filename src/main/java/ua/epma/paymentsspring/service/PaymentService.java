@@ -1,4 +1,4 @@
-package ua.epma.paymentsspring.model.service;
+package ua.epma.paymentsspring.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
-import ua.epma.paymentsspring.model.exception.BlockedCardException;
-import ua.epma.paymentsspring.model.exception.InvalidBalanceOnCardException;
-import ua.epma.paymentsspring.model.exception.InvalidCardNumberException;
+import ua.epma.paymentsspring.exception.BlockedCardException;
+import ua.epma.paymentsspring.exception.InvalidBalanceOnCardException;
+import ua.epma.paymentsspring.exception.InvalidCardNumberException;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;

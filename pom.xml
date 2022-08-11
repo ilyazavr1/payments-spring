@@ -8,6 +8,7 @@
 		<version>2.6.6</version>
 		<relativePath/>
 	</parent>
+
 	<groupId>ua.epma</groupId>
 	<artifactId>payments-spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -146,11 +147,13 @@
 	</dependencies>
 
 	<build>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${project.parent.version}</version>
+
 				<configuration>
 					<excludes>
 						<exclude>

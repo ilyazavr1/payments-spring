@@ -14,13 +14,12 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.epma.paymentsspring.exception.*;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
-import ua.epma.paymentsspring.model.exception.*;
-import ua.epma.paymentsspring.model.service.CardService;
-import ua.epma.paymentsspring.model.service.PaymentService;
-import ua.epma.paymentsspring.model.service.UserService;
+import ua.epma.paymentsspring.service.CardService;
+import ua.epma.paymentsspring.service.PaymentService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/client")
 public class ClientController {
 
-    private final UserService userService;
     private final CardService cardService;
     private final PaymentService paymentService;
 

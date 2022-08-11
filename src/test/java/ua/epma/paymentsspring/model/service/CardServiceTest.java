@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import ua.epma.paymentsspring.exception.*;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.CardUnblockRequest;
 import ua.epma.paymentsspring.model.entity.Role;
@@ -19,6 +20,7 @@ import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
+import ua.epma.paymentsspring.service.CardService;
 
 import java.util.Collection;
 

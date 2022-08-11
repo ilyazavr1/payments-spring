@@ -9,10 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.exception.AuthenticationFailedException;
-import ua.epma.paymentsspring.model.exception.InvalidCardNumberException;
-import ua.epma.paymentsspring.model.service.CardService;
-import ua.epma.paymentsspring.model.service.UserService;
+import ua.epma.paymentsspring.exception.AuthenticationFailedException;
+import ua.epma.paymentsspring.exception.InvalidCardNumberException;
+import ua.epma.paymentsspring.service.CardService;
+import ua.epma.paymentsspring.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 

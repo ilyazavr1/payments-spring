@@ -15,8 +15,8 @@ import ua.epma.paymentsspring.model.constants.UriPath;
 import ua.epma.paymentsspring.model.dto.UserDto;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.exception.UserAlreadyExistException;
-import ua.epma.paymentsspring.model.service.UserService;
+import ua.epma.paymentsspring.exception.UserAlreadyExistException;
+import ua.epma.paymentsspring.service.UserService;
 
 
 import javax.servlet.http.HttpSession;

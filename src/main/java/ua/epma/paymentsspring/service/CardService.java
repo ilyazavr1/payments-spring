@@ -1,4 +1,4 @@
-package ua.epma.paymentsspring.model.service;
+package ua.epma.paymentsspring.service;
 
 
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ua.epma.paymentsspring.exception.*;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.CardUnblockRequest;
 import ua.epma.paymentsspring.model.entity.Role;

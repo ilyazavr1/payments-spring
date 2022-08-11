@@ -1,24 +1,24 @@
 package ua.epma.paymentsspring.model.service;
 
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.parameters.P;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.exception.BlockedCardException;
-import ua.epma.paymentsspring.model.exception.InvalidBalanceOnCardException;
-import ua.epma.paymentsspring.model.exception.InvalidCardNumberException;
+import ua.epma.paymentsspring.exception.BlockedCardException;
+import ua.epma.paymentsspring.exception.InvalidBalanceOnCardException;
+import ua.epma.paymentsspring.exception.InvalidCardNumberException;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
+import ua.epma.paymentsspring.service.CardService;
+import ua.epma.paymentsspring.service.PaymentService;
 
 import java.time.LocalDateTime;
 

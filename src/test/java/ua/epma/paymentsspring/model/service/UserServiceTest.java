@@ -10,9 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ua.epma.paymentsspring.model.dto.UserDto;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.exception.UserAlreadyExistException;
+import ua.epma.paymentsspring.exception.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.repository.RoleRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
+import ua.epma.paymentsspring.service.UserService;
 
 import java.util.Optional;
 

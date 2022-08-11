@@ -1,4 +1,4 @@
-package ua.epma.paymentsspring.model.exception;
+package ua.epma.paymentsspring.exception;
 
 public class InvalidCardNumberException extends Exception {
     public InvalidCardNumberException() {
