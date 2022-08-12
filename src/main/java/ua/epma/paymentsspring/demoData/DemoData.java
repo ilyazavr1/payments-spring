@@ -9,7 +9,7 @@ import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.dto.UserDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.exception.*;
+
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.service.CardService;
 import ua.epma.paymentsspring.service.PaymentService;

@@ -16,7 +16,6 @@ import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.CardUnblockRequest;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.model.exception.*;
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
@@ -235,6 +234,7 @@ public class CardService {
         cardTo.setMoney(cardTo.getMoney() + money);
 
         cardRepository.save(cardFrom);
+
         cardRepository.save(cardTo);
         return true;
     }
