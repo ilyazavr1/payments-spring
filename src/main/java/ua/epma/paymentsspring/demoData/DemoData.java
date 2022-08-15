@@ -15,6 +15,8 @@ import ua.epma.paymentsspring.service.CardService;
 import ua.epma.paymentsspring.service.PaymentService;
 import ua.epma.paymentsspring.service.UserService;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -75,11 +77,11 @@ public class DemoData implements ApplicationRunner {
     private void topUpAllCards() {
         List<Card> cardList = new ArrayList<>();
         for (String email : userService.getAllUsers().stream().map(User::getEmail).collect(Collectors.toList())) {
-            int money = 1000;
+            BigDecimal money = new BigDecimal(1000);
 
             for (Card card : cardService.getCardListByUserEmail(email)) {
+                money = money.add(new BigDecimal(100));
                 card.setMoney(money);
-                money += 100;
                 cardList.add(card);
             }
         }
@@ -93,7 +95,7 @@ public class DemoData implements ApplicationRunner {
         PaymentDto paymentDto = PaymentDto.builder()
                 .cardSenderNumber(from.getNumber())
                 .cardDestinationNumber(to.getNumber())
-                .money(100)
+                .money(new BigDecimal(100))
                 .build();
 
 
@@ -109,7 +111,7 @@ public class DemoData implements ApplicationRunner {
         PaymentDto paymentDto = PaymentDto.builder()
                 .cardSenderNumber(from.getNumber())
                 .cardDestinationNumber(to.getNumber())
-                .money(100)
+                .money(new BigDecimal(100))
                 .build();
 
 

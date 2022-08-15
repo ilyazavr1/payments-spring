@@ -3,6 +3,7 @@ package ua.epma.paymentsspring.model.dto;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.math.BigDecimal;
 
 
 @Getter
@@ -17,7 +18,7 @@ public class PaymentDto {
     @NotNull
     @Max(10000)
     @Min(1)
-    private Integer money;
+    private BigDecimal money;
 
     @NotEmpty
     @Size(min = 16, max = 16)

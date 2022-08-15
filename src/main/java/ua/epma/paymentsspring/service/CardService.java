@@ -21,6 +21,7 @@ import ua.epma.paymentsspring.model.repository.CardUnblockRequestRepository;
 import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -92,7 +93,7 @@ public class CardService {
             throw new BlockedCardException();
         }
 
-        card.setMoney(card.getMoney() + validateMoney(money));
+        card.setMoney(card.getMoney().add(validateAndGetMoney(money)));
 
         cardRepository.save(card);
 
@@ -121,6 +122,7 @@ public class CardService {
                 .name(name)
                 .number(number)
                 .userId(userRepository.findByEmail(email))
+                .money(BigDecimal.ZERO)
                 .build();
 
         return cardRepository.save(card);
@@ -224,14 +226,15 @@ public class CardService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public boolean transferMoney(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, BlockedCardException, InvalidBalanceOnCardException {
+    public boolean transferMoney(Card cardFrom, Card cardTo, BigDecimal money) throws InvalidCardNumberException, BlockedCardException, InvalidBalanceOnCardException {
 
         if (!validateTransfer(cardFrom, cardTo, money)) {
             return false;
         }
 
-        cardFrom.setMoney(cardFrom.getMoney() - money);
-        cardTo.setMoney(cardTo.getMoney() + money);
+
+        cardFrom.setMoney(cardFrom.getMoney().subtract(money));
+        cardTo.setMoney(cardTo.getMoney().add(money));
 
         cardRepository.save(cardFrom);
 
@@ -239,29 +242,32 @@ public class CardService {
         return true;
     }
 
-    public boolean validateTransfer(Card cardFrom, Card cardTo, int money) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
+    public boolean validateTransfer(Card cardFrom, Card cardTo, BigDecimal money) throws InvalidCardNumberException, InvalidBalanceOnCardException, BlockedCardException {
         if (cardTo == null || cardFrom.getNumber().equals(cardTo.getNumber())) {
             throw new InvalidCardNumberException();
         }
         if (cardFrom.isBlocked() || cardTo.isBlocked()) {
             throw new BlockedCardException();
         }
-        if ((cardFrom.getMoney() - money) < 0) {
+        if ((cardFrom.getMoney().subtract(money)).compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidBalanceOnCardException();
         }
 
         return true;
     }
 
-    public int validateMoney(String money) throws InvalidMoneyAmountException {
-        if (money.isEmpty() || !money.replaceFirst("^0*", "").matches("^[0-9]{0,5}$")) {
+    public BigDecimal validateAndGetMoney(String money) throws InvalidMoneyAmountException {
+        if (money.isEmpty() || !money.replaceFirst("^0*", "").matches("^[0-9]*\\.?[0-9]{0,2}$")) {
             throw new InvalidMoneyAmountException();
         }
-        int moneyInt = Integer.parseInt(money);
-        if (moneyInt <= 0 || moneyInt > 10000) {
+        BigDecimal moneyBigDecimal = new BigDecimal(money);
+        System.out.println(moneyBigDecimal);
+        System.out.println(moneyBigDecimal.compareTo(BigDecimal.ZERO) <= 0 );
+        System.out.println(moneyBigDecimal.compareTo(new BigDecimal(10000)) > 0);
+        if (moneyBigDecimal.compareTo(BigDecimal.ZERO) <= 0 || moneyBigDecimal.compareTo(new BigDecimal(10000)) > 0) {
             throw new InvalidMoneyAmountException();
         }
-        return moneyInt;
+        return moneyBigDecimal;
     }
 
     public String generateCardNumber() {

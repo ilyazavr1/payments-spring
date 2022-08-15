@@ -4,6 +4,7 @@ package ua.epma.paymentsspring.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,13 +21,13 @@ public class Payment {
     private Long id;
 
     @Column(name = "balance")
-    private int balance;
+    private BigDecimal balance;
 
     @Column(name = "balance_destination")
-    private int balanceDestination;
+    private BigDecimal balanceDestination;
 
     @Column(name = "money")
-    private int money;
+    private BigDecimal money;
 
     @Column(name = "is_send")
     private boolean isSend;

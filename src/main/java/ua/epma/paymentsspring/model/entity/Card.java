@@ -4,6 +4,7 @@ package ua.epma.paymentsspring.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @NoArgsConstructor
@@ -24,7 +25,7 @@ public class Card {
     private String number;
 
     @Column(name = "money")
-    private int money;
+    private BigDecimal money;
 
     @Column(name = "blocked")
     private boolean blocked;

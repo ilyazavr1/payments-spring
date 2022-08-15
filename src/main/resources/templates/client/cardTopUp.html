@@ -23,7 +23,7 @@
                 <p th:text="${card.number}"></p>
                     <div class="form-group">
                         <label>Input money amount</label>
-                        <input name="money" class="form-control" type="number">
+                        <input name="money" class="form-control" >
 
 
                         <div style="color: red" th:if="${param.error}" th:text="#{invalidMoneyAmount}"></div>

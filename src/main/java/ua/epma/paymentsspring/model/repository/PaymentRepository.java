@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.entity.Payment;
 import ua.epma.paymentsspring.model.entity.User;
 
+import java.math.BigDecimal;
+
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
@@ -23,8 +25,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             "                                              when p.cardSenderId.id = :destCardId then :destBalance else p.balance end),\n" +
             "                 p.balanceDestination = (case when p.cardDestinationId.id = :senderCardId then :senderBalance\n" +
             "                                               when p.cardDestinationId.id = :destCardId then :destBalance else p.balanceDestination end) WHERE p.isSend= false")
-    void updatePreparedPaymentsByCardIds(@Param("senderCardId") Long senderCardId, @Param("senderBalance") int senderBalance,
-                                         @Param("destCardId") Long destCardId, @Param("destBalance") int destBalance);
+    void updatePreparedPaymentsByCardIds(@Param("senderCardId") Long senderCardId, @Param("senderBalance") BigDecimal senderBalance,
+                                         @Param("destCardId") Long destCardId, @Param("destBalance") BigDecimal destBalance);
 
 
 
@@ -34,5 +36,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             "                 p.balance = (case when p.cardSenderId.id = :senderCardId then :money else p.balance end),\n" +
             "                 p.balanceDestination = (case when p.cardDestinationId.id = :senderCardId then :money else p.balanceDestination end)" +
             " WHERE p.isSend = false")
-    void updatePreparedPayments(@Param("senderCardId") Long senderCardId, @Param("money") int money);
+    void updatePreparedPayments(@Param("senderCardId") Long senderCardId, @Param("money") BigDecimal money);
 }
