@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.model.dto.UserDto;
+import ua.epma.paymentsspring.model.dto.UserDtoWithAddress;
+import ua.epma.paymentsspring.model.dto.UserTest;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
 import ua.epma.paymentsspring.exception.UserAlreadyExistException;
@@ -32,9 +34,26 @@ public class UserService {
 
 
     public List<User> getAllUsers() {
-        return userRepository.getUsers();
+        System.out.println("---------------------------------------------------------------------------------------------");
+/*
+
+        System.out.println(userRepository.findUsersTest().get(3).getFirstName());
+        System.out.println(userRepository.findUsersTest().get(3).getAddressId().getBuilding());
+
+        List<UserTest> s = userRepository.findUsersTest();
+        System.out.println(s.get(1));
+*/
+
+        System.out.println(userRepository.testFor());
+
+        return userRepository.getUsersWithRoleClient();
     }
 
+    public List<UserDtoWithAddress> getAllUsersDtoWithAddress() {
+
+
+        return null;
+    }
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
