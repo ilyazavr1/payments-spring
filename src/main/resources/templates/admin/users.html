@@ -18,10 +18,14 @@
             <thead>
             <tr>
                 <th th:text="#{number}"></th>
-                <th style="padding-right: 150px" th:text="#{firstName}"></th>
+                <th style="padding-right: 70px" th:text="#{firstName}"></th>
                 <th th:text="#{lastName}"></th>
                 <th th:text="#{patronymic}"></th>
                 <th th:text="#{email}"></th>
+                <th th:text="#{country}"></th>
+                <th style="padding-right: 50px" th:text="#{city}"></th>
+                <th style="padding-right: 70px" th:text="#{street}"></th>
+                <th th:text="#{building}"></th>
                 <th th:text="#{status}"></th>
                 <th th:text="#{cardAction}"></th>
                 <th th:text="#{cards}"></th>
@@ -35,6 +39,10 @@
                 <td th:text="${user.lastName}"></td>
                 <td th:text="${user.patronymic}"></td>
                 <td th:text="${user.email}"></td>
+                <td th:text="${user.addressId.countryId.countryName}"></td>
+                <td th:text="${user.addressId.cityId.cityName}"></td>
+                <td th:text="${user.addressId.street}"></td>
+                <td th:text="${user.addressId.building}"></td>
                 <td class="badge badge-primary" th:text="${user.blocked} ?'blocked' : 'not blocked'"></td>
 
                 <form th:if="${user.blocked == false}" th:action="@{/admin/user/{id}/block(id=${user.id})} "
@@ -42,7 +50,8 @@
                     <input type="hidden" name="paymentId" th:value="${user.id}">
 
                     <td>
-                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block" th:text="#{block}"></button>
+                        <button name="action" value="confirm" type="submit" class="btn btn-success btn-lg btn-block"
+                                th:text="#{block}"></button>
                     </td>
 
                 </form>
@@ -51,13 +60,15 @@
                     <input type="hidden" name="paymentId" th:value="${user.id}">
 
                     <td>
-                        <button name="action" value="confirm" type="submit" class="btn btn-danger btn-xs" th:text="#{unblock}"></button>
+                        <button name="action" value="confirm" type="submit" class="btn btn-danger btn-xs"
+                                th:text="#{unblock}"></button>
                     </td>
 
                 </form>
 
 
-                <td><a th:href="@{/admin/user/{id}/cards(id=${user.id})}" class="btn btn-success" th:text="#{cards}"></a></td>
+                <td><a th:href="@{/admin/user/{id}/cards(id=${user.id})}" class="btn btn-success"
+                       th:text="#{cards}"></a></td>
 
             </tr>
         </table>

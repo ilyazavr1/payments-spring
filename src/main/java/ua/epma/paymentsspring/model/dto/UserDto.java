@@ -37,6 +37,7 @@ public class UserDto {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     private String password;
 
+
     public void setFirstName(String firstName) {
         this.firstName = firstName.trim();
     }

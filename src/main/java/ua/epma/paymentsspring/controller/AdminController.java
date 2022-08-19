@@ -29,9 +29,7 @@ public class AdminController {
 
     @GetMapping("/users")
     public String getUsers(Model model) {
-
-        model.addAttribute("userList", userService.getAllUsers());
-
+        model.addAttribute("userList", userService.getAllUsersDtoWithAddress());
         return "/admin/users";
     }
 

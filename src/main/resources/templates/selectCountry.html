@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select your country</title>
+</head>
+<body>
+
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+
+<div style="width:400px; margin-top:10%; margin-left: 40%" class="card bg-light">
+    <article class="card-body mx-auto" style="max-width: 400px;">
+
+        <h4 class="card-title mt-3 text-center" th:text="#{createAccount}"></h4>
+
+
+        <form th:action="@{/select-country}" method="post" >
+
+
+
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-user" th:text="#{country}"></i> </span>
+                </div>
+
+
+                <select  th:id="country" th:name="countryName"   class="form-control" >
+                    <option  th:each="item : ${countries}"
+                             th:value="${item.countryName}"
+                             th:utext="${item.countryName}"
+                    >
+                </select>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary" th:text="#{confirm}"></button>
+            <a th:href="@{/login}" class="float-right btn btn-outline-primary" th:text="#{signIn}"></a>
+        </form>
+    </article>
+</div>
+
+
+</body>
+</html>

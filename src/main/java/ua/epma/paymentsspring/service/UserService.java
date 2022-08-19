@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ua.epma.paymentsspring.exception.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.dto.UserDto;
-import ua.epma.paymentsspring.model.dto.UserDtoWithAddress;
-import ua.epma.paymentsspring.model.dto.UserTest;
+import ua.epma.paymentsspring.model.dto.UserWithAddressDto;
 import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
-import ua.epma.paymentsspring.exception.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.repository.RoleRepository;
+import ua.epma.paymentsspring.model.repository.UserAddressRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 
 import java.util.List;
@@ -29,31 +29,19 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserAddressRepository userAddressRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
 
     public List<User> getAllUsers() {
-        System.out.println("---------------------------------------------------------------------------------------------");
-/*
-
-        System.out.println(userRepository.findUsersTest().get(3).getFirstName());
-        System.out.println(userRepository.findUsersTest().get(3).getAddressId().getBuilding());
-
-        List<UserTest> s = userRepository.findUsersTest();
-        System.out.println(s.get(1));
-*/
-
-        System.out.println(userRepository.testFor());
-
         return userRepository.getUsersWithRoleClient();
     }
 
-    public List<UserDtoWithAddress> getAllUsersDtoWithAddress() {
-
-
-        return null;
+    public List<UserWithAddressDto> getAllUsersDtoWithAddress() {
+        return userAddressRepository.getUsersNotAdminWithAddress();
     }
+
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }

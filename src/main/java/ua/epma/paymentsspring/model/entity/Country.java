@@ -1,19 +1,20 @@
 package ua.epma.paymentsspring.model.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
+@ToString
 @Table(name = "country")
 public class Country {
 
@@ -25,8 +26,16 @@ public class Country {
     private String countryName;
 
 
-    @OneToMany(mappedBy = "countryId", fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
-    private List<City> cityId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Country country = (Country) o;
+        return id != null && Objects.equals(id, country.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

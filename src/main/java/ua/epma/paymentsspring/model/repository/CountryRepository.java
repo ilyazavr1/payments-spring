@@ -5,7 +5,7 @@ import ua.epma.paymentsspring.model.entity.Country;
 
 public interface CountryRepository extends JpaRepository<Country, Long> {
 
-
+    Country getCountryByCountryName(String name);
 
 
 }

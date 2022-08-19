@@ -17,24 +17,23 @@
         <h4 class="card-title mt-3 text-center" th:text="#{createAccount}"></h4>
 
 
-        <form th:action="@{/registration}" method="post" th:object="${userDto}">
+        <form th:action="@{/registration}" method="post" >
             <div class="form-group input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fa fa-user" th:text="#{firstName}"></i> </span>
                 </div>
-                <input type="text" name="firstName" class="form-control" th:field="*{firstName}" id="username" maxlength="64">
+                <input type="text" name="firstName" class="form-control" th:field="${userDto.firstName}" id="username" maxlength="64">
             </div>
-            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('firstName')}"
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('userDto.firstName')}"
                th:text="#{firstNameNotValid}">
             </div>
-
             <div class="form-group input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text" th:text="#{lastName}"></span>
                 </div>
-                <input type="text" name="lastName" class="form-control" th:field="*{lastName}" id="lastName" maxlength="64">
+                <input type="text" name="lastName" class="form-control" th:field="${userDto.lastName}" id="lastName" maxlength="64">
             </div>
-            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('lastName')}"
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('userDto.lastName')}"
                  th:text="#{lastNameNotValid}">
             </div>
 
@@ -42,9 +41,9 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" th:text="#{patronymic}"></span>
                 </div>
-                <input type="text" name="patronymic" class="form-control" th:field="*{patronymic}" id="surname" maxlength="64">
+                <input type="text" name="patronymic" class="form-control" th:field="${userDto.patronymic}" id="surname" maxlength="64">
             </div>
-            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('patronymic')}"
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('userDto.patronymic')}"
                  th:text="#{exception.patronymicNotValid}">
             </div>
 
@@ -52,9 +51,9 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fa fa-user" th:text="#{email}"></i></span>
                 </div>
-                <input type="text" name="email" class="form-control" th:field="*{email}" id="email" maxlength="64">
+                <input type="text" name="email" class="form-control" th:field="${userDto.email}" id="email" maxlength="64">
             </div>
-            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('email')}"
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('userDto.email')}"
                  th:text="#{emailNotValid}">
             </div>
             <div style="color: red" th:if="${emailExists != null}" th:text="#{mailExists}">.</div>
@@ -64,15 +63,42 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" th:text="#{password}"></span>
                 </div>
-                <input type="text" name="password" class="form-control" th:field="*{password}" id="password" maxlength="64">
+                <input type="text" name="password" class="form-control" th:field="${userDto.password}" id="password" maxlength="64">
             </div>
-            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('password')}"
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('userDto.password')}"
                  th:text="#{passwordNotValid}">
             </div>
 
+
+            <select  th:id="cities" th:name="cities" th:field="${addressDto.cityName}" class="form-control" >
+                <option  th:each="item : ${cities}"
+                         th:value="${item.cityName}"
+                         th:utext="${item.cityName}"
+                >
+            </select>
+<input type="hidden" th:field="${addressDto.countryName}" th:value="${session.countryName}">
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-user" th:text="#{street}"></i></span>
+                </div>
+                <input type="text" name="street" class="form-control" th:field="${addressDto.street}" id="street" maxlength="64">
+            </div>
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('addressDto.street')}"
+                 th:text="nepravilno">
+            </div>
+
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-user" th:text="#{building}"></i></span>
+                </div>
+                <input type="number" name="buildingNumber" class="form-control" th:field="${addressDto.buildingNumber}" id="buildingNumber" maxlength="64">
+            </div>
+            <div style="color: red" class="error-message" th:if="${#fields.hasErrors('addressDto.buildingNumber')}"
+                 th:text="nepravilno">
+            </div>
+
+
             <button type="submit" class="btn btn-primary" th:text="#{signUp}"></button>
-
-
             <a th:href="@{/login}" class="float-right btn btn-outline-primary" th:text="#{signIn}"></a>
         </form>
     </article>
