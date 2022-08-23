@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User cards</title>
+</head>
+<body>
+
+
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+<div class="container">
+
+
+    <div class="row col-md-6 col-md-offset-2 custyle">
+        <table class="table table-striped custab">
+            <thead>
+
+
+            <tr>
+                <th>ID</th>
+                <th style="padding-right: 150px" th:text="#{cardName}"></th>
+                <th style="padding-right: 150px" th:text="#{number}">Number</th>
+                <th style="padding-right: 100px" th:text="#{balance}"></th>
+                <th th:text="#{status}"></th>
+                <th th:text="#{cardAction}"></th>
+            </tr>
+            </thead>
+
+
+            <tr th:each="card : ${cardsList}">
+                <td th:text="${card.id}"></td>
+                <td th:text="${card.name}"></td>
+                <td th:text="${card.number}"></td>
+                <td th:text="${card.money}"></td>
+                <td class="badge badge-primary" th:text="${card.blocked} ?'blocked' : 'not blocked'"></td>
+
+                <form th:if="${card.blocked == false}"
+                      th:action="@{/accountant/user/{userId}/card/{cardId}/block(userId=${card.userId.id}, cardId=${card.id})} "
+                      method="get">
+                    <td>
+                        <button type="submit" class="btn btn-danger btn-xs" th:text="#{block}"></button>
+                    </td>
+                </form>
+
+                <form th:if="${card.blocked == true}" th:action="@{/accountant/user/card/unblock} " method="post">
+                    <input type="hidden" name="cardNumber" th:value="${card.number}">
+                    <input type="hidden" name="userId" th:value="${card.userId.id}">
+
+                    <td>
+                        <button type="submit" class="btn btn-success btn-lg btn-block" th:text="#{unblock}"></button>
+                    </td>
+                </form>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

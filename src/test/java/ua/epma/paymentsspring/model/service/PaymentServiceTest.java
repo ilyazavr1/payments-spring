@@ -1,11 +1,13 @@
 package ua.epma.paymentsspring.model.service;
 
+import org.apache.logging.log4j.core.util.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.transaction.TestTransaction;
 import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.Payment;
@@ -20,6 +22,7 @@ import ua.epma.paymentsspring.model.repository.UserRepository;
 import ua.epma.paymentsspring.service.CardService;
 import ua.epma.paymentsspring.service.PaymentService;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertThrows;
@@ -51,7 +54,7 @@ class PaymentServiceTest {
     private final static String CARD_NUMBER_1 = "1234123412341234";
     private final static String CARD_NUMBER_2 = "6345223412341234";
     private final static String MONEY100 = "100";
-    private final static int MONEY_INT100 = 100;
+    private final static BigDecimal MONEY_INT100 = new BigDecimal(100);
     private final static String INVALID_MONEY = "10000000000";
     private final static Role CLIENT_ROLE = Role.builder().id(1L).roleEnum(Role.RoleEnum.CLIENT).build();
     private final static String FIRST_NAME = "TEST_NAME";
@@ -126,6 +129,7 @@ class PaymentServiceTest {
         when(cardRepository.findByNumber(CARD_NUMBER_1)).thenReturn(CARD1);
         when(cardRepository.findByNumber(CARD_NUMBER_2)).thenReturn(CARD2);
         when(cardService.transferMoney(CARD1, CARD2, MONEY_INT100)).thenReturn(true);
+
 
         paymentService.makePayment(PAYMENT_DTO);
 

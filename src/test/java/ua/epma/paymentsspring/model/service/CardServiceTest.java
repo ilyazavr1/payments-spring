@@ -7,9 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.Rollback;
 import ua.epma.paymentsspring.exception.*;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.CardUnblockRequest;
@@ -21,6 +23,8 @@ import ua.epma.paymentsspring.model.repository.PaymentRepository;
 import ua.epma.paymentsspring.model.repository.UserRepository;
 import ua.epma.paymentsspring.service.CardService;
 
+import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import static org.junit.Assert.assertThrows;
@@ -64,7 +68,7 @@ class CardServiceTest {
     private final static String CARD_NUMBER_1 = "1234123412341234";
     private final static String CARD_NUMBER_2 = "6345223412341234";
     private final static String MONEY100 = "100";
-    private final static int MONEY_INT100 = 100;
+    private final static BigDecimal MONEY_INT100 = new BigDecimal(100);
     private final static String INVALID_MONEY = "10000000000";
 
     @BeforeEach
@@ -321,7 +325,7 @@ class CardServiceTest {
     @Test
     void transferMoneyThrowInvalidBalanceOnCardException() {
         CARD.setNumber(CARD_NUMBER_1);
-        CARD.setMoney(MONEY_INT100 - 1);
+        CARD.setMoney(MONEY_INT100.subtract(BigDecimal.valueOf(1)));
         CARD_COPY.setNumber(CARD_NUMBER_2);
 
         assertThrows(InvalidBalanceOnCardException.class, () -> cardService.transferMoney(CARD, CARD_COPY, MONEY_INT100));
@@ -333,7 +337,6 @@ class CardServiceTest {
         CARD_COPY.setNumber(CARD_NUMBER_2);
 
         cardService.transferMoney(CARD, CARD_COPY, MONEY_INT100);
-
         verify(cardRepository, times(1)).save(CARD);
         verify(cardRepository, times(1)).save(CARD_COPY);
     }

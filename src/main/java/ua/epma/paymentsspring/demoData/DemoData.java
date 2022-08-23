@@ -9,14 +9,12 @@ import ua.epma.paymentsspring.model.dto.PaymentDto;
 import ua.epma.paymentsspring.model.dto.UserDto;
 import ua.epma.paymentsspring.model.entity.Card;
 import ua.epma.paymentsspring.model.entity.User;
-
 import ua.epma.paymentsspring.model.repository.CardRepository;
 import ua.epma.paymentsspring.service.CardService;
 import ua.epma.paymentsspring.service.PaymentService;
 import ua.epma.paymentsspring.service.UserService;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -40,6 +38,7 @@ public class DemoData implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        createAddCardsToUsers();
 /*
         createUsers();
         createAddCardsToUsers();

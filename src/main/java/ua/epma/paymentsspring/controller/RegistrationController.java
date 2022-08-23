@@ -71,15 +71,13 @@ public class RegistrationController {
     }
 
     @PostMapping(UriPath.REGISTRATION)
-    public String getRegistration(@ModelAttribute(name = "userDto") @Valid UserDto userDto,
+    public String getRegistration(@ModelAttribute(name = "userDto") @Valid UserDto useRegistrationDto,
                                   BindingResult bindingResultUserDto,
                                   @ModelAttribute(name = "addressDto") @Valid AddressDto addressDto,
                                   BindingResult bindingResultAddressDto,
                                   HttpSession httpSession, Model model) {
         String country = httpSession.getAttribute("countryName") == null
                 ? null : httpSession.getAttribute("countryName").toString();
-
-        addressDto.setCountryName(country);
 
         if (country == null || country.isEmpty()) {
             return "redirect:/select-country";
@@ -91,13 +89,14 @@ public class RegistrationController {
         }
 
         User user;
-//TODO clean up RegistrationController
+
         try {
-            user = userService.registerUser(userDto);
+            addressDto.setCountryName(country);
+            user = userService.registerUser(useRegistrationDto);
             userAddressService.addAddressToUser(addressDto, user);
 
         } catch (UserAlreadyExistException e) {
-            log.warn("Email {} is registered", userDto.getEmail());
+            log.warn("Email {} is registered", useRegistrationDto.getEmail());
             model.addAttribute("emailExists", "emailExists");
             return UriPath.REGISTRATION;
         }
@@ -124,6 +123,11 @@ public class RegistrationController {
         if (authentication.getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())) {
             log.info("{} logged in with email: {}", Role.RoleEnum.ADMINISTRATOR.name(), authentication.getName());
             return "redirect:" + UriPath.ADMIN_TEST;
+        }
+
+        if (authentication.getAuthorities().toString().contains(Role.RoleEnum.ACCOUNTANT.name())) {
+            log.info("{} logged in with email: {}", Role.RoleEnum.ACCOUNTANT.name(), authentication.getName());
+            return "redirect:/accountant/users";
         }
 
         return UriPath.LOGIN;

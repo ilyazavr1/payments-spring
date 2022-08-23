@@ -174,7 +174,7 @@ public class CardService {
     public void blockCardByNumber(String number, String password) throws InvalidCardNumberException, AuthenticationFailedException {
         Card card;
 
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains(Role.RoleEnum.ADMINISTRATOR.name())) {
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains(Role.RoleEnum.ACCOUNTANT.name())) {
             card = cardRepository.findByNumber(number);
         } else {
             card = getCardByCurrentUserByNumber(number);

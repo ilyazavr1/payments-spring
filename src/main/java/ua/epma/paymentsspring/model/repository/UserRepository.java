@@ -3,7 +3,8 @@ package ua.epma.paymentsspring.model.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ua.epma.paymentsspring.model.dto.UserTest;
+import ua.epma.paymentsspring.model.dto.UserForAccountantDto;
+import ua.epma.paymentsspring.model.entity.Role;
 import ua.epma.paymentsspring.model.entity.User;
 
 import java.util.List;
@@ -21,10 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u where u.role.roleEnum = 'CLIENT'")
     List<User> getUsersWithRoleClient();
 
-
-
-    @Query(value = "SELECT u.firstName as firstName, ua.addressId as addressId FROM User u INNER join UserAddress ua on ua.userId = u")
-    List<UserTest> findUsersTest();
+    List<UserForAccountantDto> getUsersByRoleRoleEnum(Role.RoleEnum roleEnum);
 
 
 

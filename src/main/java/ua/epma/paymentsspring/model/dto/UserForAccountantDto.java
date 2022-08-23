@@ -1,11 +1,10 @@
 package ua.epma.paymentsspring.model.dto;
 
 import lombok.Value;
-import ua.epma.paymentsspring.model.entity.Address;
 import ua.epma.paymentsspring.model.entity.Role;
 
 @Value
-public class UserWithAddressDto {
+public class UserForAccountantDto {
 
     Long id;
     String firstName;
@@ -14,9 +13,9 @@ public class UserWithAddressDto {
     String email;
     boolean blocked;
     Role role;
-    Address addressId;
 
-    public UserWithAddressDto(Long id, String firstName, String lastName, String patronymic, String email, boolean blocked, Role role, Address addressId) {
+
+    public UserForAccountantDto(Long id, String firstName, String lastName, String patronymic, String email, boolean blocked, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,6 +23,6 @@ public class UserWithAddressDto {
         this.email = email;
         this.blocked = blocked;
         this.role = role;
-        this.addressId = addressId;
     }
+
 }

@@ -24,7 +24,7 @@ public class Role {
 
 
     public enum RoleEnum {
-        ADMINISTRATOR, CLIENT
+        ADMINISTRATOR, CLIENT, ACCOUNTANT
 
     }
 

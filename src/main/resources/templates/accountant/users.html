@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All users</title>
+</head>
+<body>
+
+
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+<div class="container">
+
+
+    <div class="row col-md-6 col-md-offset-2 custyle">
+        <table class="table table-striped custab">
+            <thead>
+            <tr>
+                <th th:text="#{number}"></th>
+                <th style="padding-right: 70px" th:text="#{firstName}"></th>
+                <th th:text="#{lastName}"></th>
+                <th th:text="#{patronymic}"></th>
+                <th th:text="#{email}"></th>
+                <th th:text="#{status}"></th>
+                <th th:text="#{cards}"></th>
+            </tr>
+            </thead>
+
+
+            <tr th:each="user : ${userList}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.patronymic}"></td>
+                <td th:text="${user.email}"></td>
+                <td class="badge badge-primary" th:text="${user.blocked} ?'blocked' : 'not blocked'"></td>
+
+                <td><a th:href="@{/accountant/user/{id}/cards(id=${user.id})}" class="btn btn-success"
+                       th:text="#{cards}"></a></td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

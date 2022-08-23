@@ -28,7 +28,6 @@
                 <th th:text="#{building}"></th>
                 <th th:text="#{status}"></th>
                 <th th:text="#{cardAction}"></th>
-                <th th:text="#{cards}"></th>
             </tr>
             </thead>
 
@@ -65,11 +64,6 @@
                     </td>
 
                 </form>
-
-
-                <td><a th:href="@{/admin/user/{id}/cards(id=${user.id})}" class="btn btn-success"
-                       th:text="#{cards}"></a></td>
-
             </tr>
         </table>
     </div>

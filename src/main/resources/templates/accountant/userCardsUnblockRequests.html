@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Card unblock requests</title>
+</head>
+<body>
+<div th:insert="fragments/navBar :: 'header'"></div>
+
+
+<div class="container">
+
+
+    <div class="row col-md-6 col-md-offset-2 custyle">
+        <table class="table table-striped custab">
+            <thead>
+
+
+            <tr>
+                <th>ID</th>
+                <th th:text="#{firstName}"></th>
+                <th th:text="#{lastName}"></th>
+                <th th:text="#{patronymic}"></th>
+                <th th:text="#{number}"></th>
+                <th th:text="#{balance}"></th>
+         <!--       <th th:text="#{status}"></th>-->
+                <th th:text="#{cardAction}"></th>
+            </tr>
+            </thead>
+
+
+            <tr th:each="request : ${requestList}">
+                <td th:text="${request.id}"></td>
+                <td th:text="${request.userId.firstName}"></td>
+                <td th:text="${request.userId.lastName}"></td>
+                <td th:text="${request.userId.patronymic}"></td>
+                <td th:text="${request.cardId.number}"></td>
+                <td th:text="${request.cardId.money}"></td>
+              <!--  <td class="badge badge-primary" th:text="${request.card_id.blocked} ?'blocked' : 'not blocked'"></td>-->
+
+                <form th:if="${(request.processed == false)}" th:action="@{/accountant/user/card/unblock} " method="post">
+                    <input type="hidden" name="cardNumber" th:value="${request.cardId.number}">
+                    <input type="hidden" name="userId" th:value="${request.userId.id}">
+                    <input type="hidden" name="requestId" th:value="${request.id}">
+
+                    <td>
+                        <button type="submit" class="btn btn-success btn-lg btn-block" th:text="#{unblock}"></button>
+                    </td>
+                </form>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

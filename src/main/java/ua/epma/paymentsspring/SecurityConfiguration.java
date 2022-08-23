@@ -50,6 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/client/**").hasAnyAuthority(Role.RoleEnum.CLIENT.name())
                 .antMatchers("/admin/**").hasAuthority(Role.RoleEnum.ADMINISTRATOR.name())
+                .antMatchers("/accountant/**").hasAuthority(Role.RoleEnum.ACCOUNTANT.name())
                 .antMatchers("/registration").anonymous()
                 .antMatchers("/login").anonymous()
                 .and()
