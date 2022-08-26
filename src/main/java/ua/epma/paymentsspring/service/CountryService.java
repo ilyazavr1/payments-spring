@@ -11,13 +11,13 @@ import java.util.List;
 @Service
 public class CountryService {
 
-    CountryRepository countryRepository;
+    private CountryRepository countryRepository;
 
-    public List<Country> getCountries(){
+    public List<Country> getCountries() {
         return countryRepository.findAll();
     }
 
-    public Country getCountryByName(String name){
+    public Country getCountryByName(String name) {
         return countryRepository.getCountryByCountryName(name);
     }
 

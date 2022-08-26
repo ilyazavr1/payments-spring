@@ -7,14 +7,14 @@ import ua.epma.paymentsspring.model.entity.Role;
 @Value
 public class UserWithAddressDto {
 
-    Long id;
-    String firstName;
-    String lastName;
-    String patronymic;
-    String email;
-    boolean blocked;
-    Role role;
-    Address addressId;
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String patronymic;
+    private  String email;
+    private  boolean blocked;
+    private  Role role;
+    private  Address addressId;
 
     public UserWithAddressDto(Long id, String firstName, String lastName, String patronymic, String email, boolean blocked, Role role, Address addressId) {
         this.id = id;

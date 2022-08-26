@@ -12,6 +12,7 @@
     <suppress checks="LineLength" files="."/>
     <suppress checks="HiddenField" files="."/>
     <suppress checks="AvoidStarImport" files="."/>
+    <suppress checks="ParameterNumber" files="."/>
     <suppress checks="OperatorWrap" files="."/>
     <suppress checks="HideUtilityClassConstructor" files="PaymentsSpringApplication.java"/>
     <suppress checks="HiddenField" files="ApplicationUserDetails.java"/>

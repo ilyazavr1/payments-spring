@@ -6,13 +6,13 @@ import ua.epma.paymentsspring.model.entity.Role;
 @Value
 public class UserForAccountantDto {
 
-    Long id;
-    String firstName;
-    String lastName;
-    String patronymic;
-    String email;
-    boolean blocked;
-    Role role;
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String patronymic;
+    private String email;
+    private  boolean blocked;
+    private  Role role;
 
 
     public UserForAccountantDto(Long id, String firstName, String lastName, String patronymic, String email, boolean blocked, Role role) {

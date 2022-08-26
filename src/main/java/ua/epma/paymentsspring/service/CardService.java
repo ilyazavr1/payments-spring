@@ -262,7 +262,7 @@ public class CardService {
         }
         BigDecimal moneyBigDecimal = new BigDecimal(money);
         System.out.println(moneyBigDecimal);
-        System.out.println(moneyBigDecimal.compareTo(BigDecimal.ZERO) <= 0 );
+        System.out.println(moneyBigDecimal.compareTo(BigDecimal.ZERO) <= 0);
         System.out.println(moneyBigDecimal.compareTo(new BigDecimal(10000)) > 0);
         if (moneyBigDecimal.compareTo(BigDecimal.ZERO) <= 0 || moneyBigDecimal.compareTo(new BigDecimal(10000)) > 0) {
             throw new InvalidMoneyAmountException();

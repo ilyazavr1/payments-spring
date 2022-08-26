@@ -38,7 +38,7 @@ public class DemoData implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        createAddCardsToUsers();
+       // createAddCardsToUsers();
 /*
         createUsers();
         createAddCardsToUsers();
