@@ -27,21 +27,24 @@ public class AccountantController {
 
     @GetMapping("/users")
     public String getUsers(Model model) {
-        model.addAttribute("userList", userService.getAllUsersDtoWithNoAddressNoPasswordWhereRoleClient());
-        return "/accountant/users";
+        model.addAttribute("userList",
+                userService.getAllUsersDtoWithNoAddressNoPasswordWhereRoleClient());
+        return "accountant/users";
     }
 
 
     @GetMapping("/user/{id}/cards")
     public String getUsersCards(Model model, @PathVariable String id) {
 
-        model.addAttribute("cardsList", cardService.getCardListByUserId(Long.valueOf(id)));
+        model.addAttribute("cardsList",
+                cardService.getCardListByUserId(Long.valueOf(id)));
 
-        return "/accountant/userCards";
+        return "accountant/userCards";
     }
 
     @GetMapping("/user/{userid}/card/{cardId}/block")
-    public String getCardBlock(Model model, @PathVariable String cardId, @PathVariable String userid) {
+    public String getCardBlock(Model model, @PathVariable String cardId,
+                               @PathVariable String userid) {
         Card card = cardService.getCardById(Long.valueOf(cardId));
 
         if (card == null) {
@@ -50,30 +53,41 @@ public class AccountantController {
 
         model.addAttribute("card", card);
 
-        return "/accountant/accountantBlockCard";
+        return "accountant/accountantBlockCard";
     }
 
 
     @PostMapping("/user/card/block")
-    public String postCardBlock(@RequestParam("cardNumber") String cardNumber, @RequestParam("cardId") String cardId, @RequestParam("userId") String clientId, @RequestParam("password") String password) {
+    public String postCardBlock(@RequestParam("cardNumber") String cardNumber,
+                                @RequestParam("cardId") String cardId,
+                                @RequestParam("userId") String clientId,
+                                @RequestParam("password") String password) {
 
         try {
             cardService.blockCardByNumber(cardNumber, password);
         } catch (InvalidCardNumberException e) {
-            log.warn("ACCOUNTANT {} tried to block non-existent card {}", SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+            log.warn("ACCOUNTANT {} tried to block non-existent card {}",
+                    SecurityContextHolder.getContext().getAuthentication().getName(),
+                    cardNumber);
             return "redirect:/accountant/user/" + clientId + "/cards";
         } catch (AuthenticationFailedException e) {
-            log.warn("ACCOUNTANT {} entered the wrong password trying block card {}", SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+            log.warn(
+                    "ACCOUNTANT {} entered the wrong password trying block " + "card {}",
+                    SecurityContextHolder.getContext().getAuthentication().getName(),
+                    cardNumber);
             return "redirect:/accountant/user/" + clientId + "/card/" + cardId + "/block?wrongPassword";
         }
-        log.info("ACCOUNTANT     {} blocked card [card number: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+        log.info("ACCOUNTANT     {} blocked card [card number: {}]",
+                SecurityContextHolder.getContext().getAuthentication().getName(),
+                cardNumber);
         return "redirect:/accountant/user/" + clientId + "/cards";
     }
 
     @PostMapping("/user/card/unblock")
     public String postCardUnlock(@RequestParam("cardNumber") String cardNumber,
                                  @RequestParam("userId") String clientId,
-                                 @RequestParam(value = "requestId", required = false) String requestId,
+                                 @RequestParam(value = "requestId", required
+                                         = false) String requestId,
                                  HttpServletRequest request) {
         String referer;
         try {
@@ -81,27 +95,33 @@ public class AccountantController {
             referer = request.getHeader("referer");
         } catch (InvalidCardNumberException e) {
             log.warn("ACCOUNTANT {} tried to unblock non-existent card {}",
-                    SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+                    SecurityContextHolder.getContext().getAuthentication().getName(),
+                    cardNumber);
             return "redirect:/accountant/user/" + clientId + "/cards";
         }
 
 
         if (referer.contains("unblock-request")) {
             if (!requestId.isEmpty()) {
-                cardService.processedCardUnblockRequest(Long.valueOf(requestId));
+                cardService.processedCardUnblockRequest(
+                        Long.valueOf(requestId));
                 log.info("ACCOUNTANT {} unblocked card [number: {}]",
-                        SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+                        SecurityContextHolder.getContext().getAuthentication().getName(),
+                        cardNumber);
             }
             return "redirect:/accountant/cards/unblock-request";
         }
 
-        log.info("ACCOUNTANT {} unblocked card [number: {}]", SecurityContextHolder.getContext().getAuthentication().getName(), cardNumber);
+        log.info("ACCOUNTANT {} unblocked card [number: {}]",
+                SecurityContextHolder.getContext().getAuthentication().getName(),
+                cardNumber);
         return "redirect:/accountant/user/" + clientId + "/cards";
     }
+
     @GetMapping("/cards/unblock-request")
     public String getCardsUnblockRequest(Model model) {
         model.addAttribute("requestList", cardService.getCardUnblockRequest());
-        return "/accountant/userCardsUnblockRequests";
+        return "accountant/userCardsUnblockRequests";
     }
 
 }

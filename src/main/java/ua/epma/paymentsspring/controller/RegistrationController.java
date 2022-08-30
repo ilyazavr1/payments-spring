@@ -35,11 +35,12 @@ public class RegistrationController {
     private CityService cityService;
     private UserAddressService userAddressService;
 
+
     @GetMapping("/select-country")
     public String getCountrySelection(Model model) {
         model.addAttribute("countries", countryService.getCountries());
 
-        return "/selectCountry";
+        return "selectCountry";
     }
 
     @PostMapping("/select-country")
@@ -67,7 +68,7 @@ public class RegistrationController {
         model.addAttribute("addressDto", new AddressDto());
         model.addAttribute("cities", cityService.getCitiesByCountryName(country));
 
-        return UriPath.REGISTRATION;
+        return "registration";
     }
 
     @PostMapping(UriPath.REGISTRATION)
@@ -85,7 +86,7 @@ public class RegistrationController {
 
         if (bindingResultUserDto.hasErrors() || bindingResultAddressDto.hasErrors()) {
             model.addAttribute("cities", cityService.getCitiesByCountryName(country));
-            return UriPath.REGISTRATION;
+            return "registration";
         }
 
         User user;
@@ -101,13 +102,13 @@ public class RegistrationController {
             return UriPath.REGISTRATION;
         }
         log.warn("User registered with email: {}", user.getEmail());
-        return UriPath.LOGIN;
+        return "login";
     }
 
     @GetMapping(UriPath.LOGIN)
     public String getLogin(@RequestParam(value = "user", defaultValue = "false") String loginError, Model model) {
 
-        return UriPath.LOGIN;
+        return "login";
     }
 
     @GetMapping(UriPath.LOGIN_REDIRECT)
@@ -130,7 +131,7 @@ public class RegistrationController {
             return "redirect:/accountant/users";
         }
 
-        return UriPath.LOGIN;
+        return "login";
     }
 
 }

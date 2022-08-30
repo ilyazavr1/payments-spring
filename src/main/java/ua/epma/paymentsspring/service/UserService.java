@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.epma.paymentsspring.exception.UserAlreadyExistException;
 import ua.epma.paymentsspring.model.dto.UserDto;
-
 import ua.epma.paymentsspring.model.dto.UserForAccountantDto;
 import ua.epma.paymentsspring.model.dto.UserWithAddressDto;
 import ua.epma.paymentsspring.model.entity.Role;
@@ -47,6 +46,7 @@ public class UserService {
     public List<UserForAccountantDto> getAllUsersDtoWithNoAddressNoPasswordWhereRoleClient() {
         return userRepository.getUsersByRoleRoleEnum(Role.RoleEnum.CLIENT);
     }
+
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
@@ -70,25 +70,27 @@ public class UserService {
     }
 
     /**
-     * @param useRegistrationDto UserDto object that contains validated information for creating User.
+     * @param useRegistrationDto UserDto object that contains validated
+     *                           information for creating User.
      * @return saved User in database.
      * @throws UserAlreadyExistException if email already exists in database.
      */
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public User registerUser(UserDto useRegistrationDto) throws UserAlreadyExistException {
+    @Transactional(propagation = Propagation.REQUIRED, isolation =
+            Isolation.REPEATABLE_READ)
+    public User registerUser(UserDto useRegistrationDto) throws
+            UserAlreadyExistException {
         if (emailExists(useRegistrationDto.getEmail())) {
             throw new UserAlreadyExistException();
         }
 
-        User user = User.builder()
-                .firstName(useRegistrationDto.getFirstName())
-                .lastName(useRegistrationDto.getLastName())
-                .patronymic(useRegistrationDto.getPatronymic())
-                .email(useRegistrationDto.getEmail())
-                .password(encoder.encode(useRegistrationDto.getPassword()))
-                .blocked(false)
-                .role(roleRepository.findByRoleEnum(Role.RoleEnum.CLIENT))
-                .build();
+        User user = User.builder().firstName(
+                useRegistrationDto.getFirstName()).lastName(
+                useRegistrationDto.getLastName()).patronymic(
+                useRegistrationDto.getPatronymic()).email(
+                useRegistrationDto.getEmail()).password(
+                encoder.encode(useRegistrationDto.getPassword())).blocked(
+                false).role(
+                roleRepository.findByRoleEnum(Role.RoleEnum.CLIENT)).build();
 
         return userRepository.save(user);
     }

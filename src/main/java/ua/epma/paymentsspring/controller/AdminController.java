@@ -28,7 +28,7 @@ public class AdminController {
     @GetMapping("/users")
     public String getUsers(Model model) {
         model.addAttribute("userList", userService.getAllUsersDtoWithAddressNoPasswordWhereRoleClient());
-        return "/admin/users";
+        return "admin/users";
     }
 
     @PostMapping("/user/{id}/block")
